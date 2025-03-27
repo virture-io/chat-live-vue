@@ -1,0 +1,32 @@
+{
+  "name": "vue-chat-widget-drap",
+  "private": false,
+  "version": "1.0.5",
+  "type": "module",
+  "license": "MIT",
+  "author": {"name": "drap"},
+  "description": "un simple chat de prueba",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/chat-widget.umd.js",
+  "module": "./dist/chat-widget.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/chat-widget.es.js",
+      "require": "./dist/chat-widget.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.2.0"
+  }
+}

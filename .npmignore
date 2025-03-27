@@ -1,0 +1,47 @@
+# Directorios de desarrollo y configuración
+/src
+/public
+/tests
+/examples
+
+# Archivos de configuración de desarrollo
+vite.config.js
+tsconfig.json
+.eslintrc
+.prettierrc
+.gitignore
+.env
+.env.*
+
+# Archivos de git y repositorio
+.git
+.github
+.gitattributes
+
+# Carpetas de dependencias y caché
+node_modules/
+npm-debug.log
+yarn.log
+.npm
+.pnpm-store
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de desarrollo y compilación
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de pruebas y cobertura
+/coverage
+*.test.js
+*.spec.js
