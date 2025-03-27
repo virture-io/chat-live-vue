@@ -1,42 +1,36 @@
 <template>
   <div ref="messagesContainer" class="messages-container">
     <div
-      v-for="(item, index) in list"
+      v-for="(item, index) in messages"
       :key="index"
       :class="[
         'message',
         item.role === 'user' ? 'message-sent' : 'message-received',
       ]"
     >
-      <div v-if="item.role === 'thinking'" class="containerLoad">
-        <div class="loader"></div>
-      </div>
-
-      <div v-else>{{ item.message }}</div>
+      <div>{{ item.message }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
-import { useSocket } from "../composable/socket-connection";
+import { ref, onMounted, nextTick, watch } from "vue";
+import { useChatMessages } from "../composable/useMessages";
 
-const socket = useSocket();
-const list = ref([]);
-const id = localStorage.getItem("idThread") ?? "";
-socket.emit("connected-chat", id, (val) => {
-  list.value = val.listMessage;
-});
-
+const { messages } = useChatMessages();
 const messagesContainer = ref(null);
 
-onMounted(() => {
+const scrollToBottom = () => {
   nextTick(() => {
     if (messagesContainer.value) {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
   });
-});
+};
+
+onMounted(scrollToBottom);
+
+watch(messages, scrollToBottom, { deep: true });
 </script>
 
 <style scoped>
@@ -108,7 +102,7 @@ onMounted(() => {
   margin-top: 2px;
   opacity: 0.7;
   align-self: flex-end;
-  color: var(--message-text-color-datetime);
+  color: #3f3f3f;
 }
 
 @media (max-width: 480px) {
@@ -121,19 +115,6 @@ onMounted(() => {
   }
 }
 
-.loader {
-  width: 30px;
-  aspect-ratio: 2;
-  --_g: no-repeat
-    radial-gradient(
-      circle closest-side,
-      var(--message-color-text-loading) 90%,
-      #0000
-    );
-  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
-  background-size: calc(100% / 3) 50%;
-  animation: l3 1s infinite linear;
-}
 
 @keyframes l3 {
   20% {
@@ -148,24 +129,6 @@ onMounted(() => {
   80% {
     background-position: 0% 50%, 50% 50%, 100% 100%;
   }
-}
-
-.containerLoad {
-  background-color: var(--message-bg-color-loading);
-  padding: 6px 10px;
-  border-radius: 3px;
-  max-width: 70%;
-  min-width: 30px;
-  margin-right: auto;
-  transform: translateY(-4px);
-  transition: all 0.2s ease-in-out;
-  display: flex;
-}
-
-.containerLoad:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07), 0 4px 8px rgba(0, 0, 0, 0.07),
-    0 8px 16px rgba(0, 0, 0, 0.07), 0 16px 32px rgba(0, 0, 0, 0.07);
 }
 
 .message-content a {

@@ -26,7 +26,7 @@ onMounted(() => {
       <span v-else>✕</span>
     </button>
 
-    <div v-if="isChatOpen" class="">
+    <div v-if="isChatOpen">
       <FormComponent />
     </div>
   </div>

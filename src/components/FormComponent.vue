@@ -33,11 +33,32 @@
 import { ref } from "vue";
 import SvgComponent from "./SvgComponent.vue";
 import ChatBubbleComponent from "./ChatBubbleComponent.vue";
+import { useChatMessages } from "../composable/useMessages";
+import { useSocket } from "../composable/socket-connection";
 
+const { addMessage } = useChatMessages();
 const message = ref("");
+const socket = useSocket();
+const id = localStorage.getItem("idThread") ?? "";
 
 const sendMessage = () => {
   if (message.value.trim()) {
+    const form = {
+      message: message.value.trim(),
+      role: "user",
+    };
+    addMessage(form);
+    socket.emit(
+      "send-chat-message",
+      {
+        idThread: id,
+        message: message.value.trim(),
+        idConfig: "67d1bcf3805419e0f2a27011",
+      },
+      (val) => {
+        console.log(val);
+      }
+    );
     message.value = "";
   }
 };
