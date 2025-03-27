@@ -1,10 +1,12 @@
 {
   "name": "vue-chat-widget-drap",
   "private": false,
-  "version": "1.0.5",
+  "version": "1.2.0",
   "type": "module",
   "license": "MIT",
-  "author": {"name": "drap"},
+  "author": {
+    "name": "drap"
+  },
   "description": "un simple chat de prueba",
   "files": [
     "dist"
@@ -23,6 +25,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
