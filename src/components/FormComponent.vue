@@ -6,7 +6,7 @@
         <SvgComponent :type="'hello'" />
       </div>
       <div class="restart-header">
-        <p class="subtitle">Start a chat. We're here to help you 24/7</p>
+        <p class="subtitle">Inicia un chat, estamos aquí para ayudarte.</p>
         <button>
           <SvgComponent />
         </button>
@@ -39,7 +39,7 @@ import { useSocket } from "../composable/socket-connection";
 const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
-const id = localStorage.getItem("idThread") ?? "";
+const id = localStorage.getItem("idThread");
 
 const sendMessage = () => {
   if (message.value.trim()) {
@@ -51,7 +51,7 @@ const sendMessage = () => {
     socket.emit(
       "send-chat-message",
       {
-        idThread: id,
+        idThread: id ?? "",
         message: message.value.trim(),
         idConfig: "67d1bcf3805419e0f2a27011",
       },

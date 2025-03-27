@@ -23,7 +23,9 @@ export const socketConnection = () => {
     console.log("✅ Socket conectado correctamente");
 
     socket.emit("connected-chat", id, (val) => {
-      setValueMessages(val.listMessage);
+      if ("listMessage" in val) {
+        setValueMessages(val.listMessage);
+      }
     });
   });
 
@@ -32,7 +34,10 @@ export const socketConnection = () => {
   });
 
   socket.on("response", (val) => {
-    addMessage({ role: "assistant", message: val });
+    if (!val.isContinue) {
+      localStorage.setItem("idThread", val.idThread);
+    }
+    addMessage({ role: "assistant", message: val.message });
   });
 
   return socket;
