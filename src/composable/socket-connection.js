@@ -4,14 +4,14 @@ import { useChatMessages } from "./useMessages";
 
 let socket = null;
 
-export const socketConnection = () => {
+export const socketConnection = (socketUrl) => {
   if (socket) return socket;
 
   const { setValueMessages, addMessage } = useChatMessages();
   const userUUID = uuidv4();
   const id = localStorage.getItem("idThread") ?? "";
 
-  socket = io("http://localhost:7777", {
+  socket = io(socketUrl, {
     transports: ["websocket", "polling"],
     reconnection: true,
     reconnectionAttempts: 5,

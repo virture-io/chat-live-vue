@@ -4,6 +4,13 @@ import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
 import { socketConnection } from "./composable/socket-connection";
 
+// const props = defineProps({
+//   socketUrl: {
+//     type: String,
+//     required: true
+//   }
+// });
+
 const toggleChat = () => {
   isChatOpen.value = !isChatOpen.value;
 };
@@ -11,7 +18,7 @@ const toggleChat = () => {
 const isChatOpen = ref(false);
 
 onMounted(() => {
-  socketConnection();
+  socketConnection('http://localhost:7777');
 });
 </script>
 
