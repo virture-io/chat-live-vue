@@ -36,6 +36,13 @@ import ChatBubbleComponent from "./ChatBubbleComponent.vue";
 import { useChatMessages } from "../composable/useMessages";
 import { useSocket } from "../composable/socket-connection";
 
+const props = defineProps({
+  idConfig: {
+    type: String,
+    required: true,
+  },
+});
+
 const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
@@ -53,7 +60,7 @@ const sendMessage = () => {
       {
         idThread: id ?? "",
         message: message.value.trim(),
-        idConfig: "67d1bcf3805419e0f2a27011",
+        idConfig: props.idConfig,
       },
       (val) => {
         console.log(val);

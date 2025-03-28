@@ -4,7 +4,8 @@ import Chat from '../App.vue'
 // Convertir el componente Vue en un Custom Element
 const ChatElement = defineCustomElement(Chat, {
   props: {
-    socketUrl: String
+    socketUrl: String,
+    idConfig: String
   }
 })
 

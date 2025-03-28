@@ -4,12 +4,16 @@ import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
 import { socketConnection } from "./composable/socket-connection";
 
-// const props = defineProps({
-//   socketUrl: {
-//     type: String,
-//     required: true
-//   }
-// });
+const props = defineProps({
+  socketUrl: {
+    type: String,
+    required: true,
+  },
+  idConfig: {
+    type: String,
+    required: true,
+  },
+});
 
 const toggleChat = () => {
   isChatOpen.value = !isChatOpen.value;
@@ -18,7 +22,7 @@ const toggleChat = () => {
 const isChatOpen = ref(false);
 
 onMounted(() => {
-  socketConnection('http://localhost:7777');
+  socketConnection(props.socketUrl);
 });
 </script>
 
@@ -34,7 +38,7 @@ onMounted(() => {
     </button>
 
     <div v-if="isChatOpen">
-      <FormComponent />
+      <FormComponent :idConfig="idConfig" />
     </div>
   </div>
 </template>
