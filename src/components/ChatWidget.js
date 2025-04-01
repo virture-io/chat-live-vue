@@ -1,15 +1,16 @@
-import { defineCustomElement } from 'vue'
-import Chat from '../App.vue'
+import { defineCustomElement } from "vue";
+import Chat from "../App.vue";
 
 // Convertir el componente Vue en un Custom Element
 const ChatElement = defineCustomElement(Chat, {
   props: {
     socketUrl: String,
-    idConfig: String
-  }
-})
+    idAgent: String,
+    api_key: String,
+  },
+});
 
 // Registrar el elemento personalizado
-customElements.define('vue-chat-widget', ChatElement)
+customElements.define("vue-chat-widget", ChatElement);
 
-export default ChatElement 
+export default ChatElement;

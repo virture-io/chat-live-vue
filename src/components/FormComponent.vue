@@ -37,7 +37,7 @@ import { useChatMessages } from "../composable/useMessages";
 import { useSocket } from "../composable/socket-connection";
 
 const props = defineProps({
-  idConfig: {
+  idAgent: {
     type: String,
     required: true,
   },
@@ -46,21 +46,21 @@ const props = defineProps({
 const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
-const id = localStorage.getItem("idThread");
+const id = localStorage.getItem("userUUID");
 
 const sendMessage = () => {
   if (message.value.trim()) {
     const form = {
-      message: message.value.trim(),
+      content: message.value.trim(),
       role: "user",
     };
     addMessage(form);
     socket.emit(
       "send-chat-message",
       {
-        idThread: id ?? "",
+        userUUID: id ?? "",
         message: message.value.trim(),
-        idConfig: props.idConfig,
+        agentId: props.idAgent,
       },
       (val) => {
         console.log(val);
@@ -77,8 +77,8 @@ const sendMessage = () => {
   position: absolute;
   bottom: 80px;
   left: 0;
-  width: 28rem;
-  height: 40rem;
+  width: 80vw;
+  height: 80vh;
   background-color: #ffffff;
   border-radius: 6px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -86,6 +86,19 @@ const sendMessage = () => {
   flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
   overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .chat-panel {
+    width: 80vw;
+  }
+}
+
+@media (min-width: 1025px) {
+  .chat-panel {
+    width: 30vw;
+    height: 70vh;
+  }
 }
 
 /* encabezado saludo */

@@ -8,7 +8,7 @@
         item.role === 'user' ? 'message-sent' : 'message-received',
       ]"
     >
-      <div>{{ item.message }}</div>
+      <div>{{ item.content }}</div>
     </div>
   </div>
 </template>

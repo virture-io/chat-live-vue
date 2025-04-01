@@ -9,7 +9,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  idConfig: {
+  idAgent: {
+    type: String,
+    required: true,
+  },
+  api_key: {
     type: String,
     required: true,
   },
@@ -22,7 +26,7 @@ const toggleChat = () => {
 const isChatOpen = ref(false);
 
 onMounted(() => {
-  socketConnection(props.socketUrl);
+  socketConnection(props.socketUrl, props.idAgent, props.api_key);
 });
 </script>
 
@@ -37,13 +41,13 @@ onMounted(() => {
       <span v-else>✕</span>
     </button>
 
-    <div v-if="isChatOpen">
-      <FormComponent :idConfig="idConfig" />
+    <div v-if="isChatOpen" class="form-container">
+      <FormComponent :idAgent="props.idAgent" />
     </div>
   </div>
 </template>
 
-<style>
+<style scoped>
 :host {
   display: block;
 }
@@ -78,5 +82,9 @@ onMounted(() => {
 
 .chat-button.active {
   background-color: #131844;
+}
+
+.form-container {
+  position: relative;
 }
 </style>
