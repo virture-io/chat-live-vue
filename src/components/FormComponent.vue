@@ -62,9 +62,7 @@ const sendMessage = () => {
         message: message.value.trim(),
         agentId: props.idAgent,
       },
-      (val) => {
-        console.log(val);
-      }
+      (val) => {}
     );
     message.value = "";
   }
