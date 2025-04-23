@@ -1,14 +1,22 @@
 ## Descripcion
 
+Chat widget to test
+
 ## Steps
 
 1- import
 
+```js
+import "vue-chat-widget";
+```
+
+2- Config widget
+
 ```html
 <vue-chat-widget
   .socketUrl="'url'"
-  .idAgent="'key'"
-  .api_key="'description'"
+  .idAgent="'id'"
+  .api_key="'key'"
+  .welcomeMessage="'welcome'"
 ></vue-chat-widget>
 ```
-

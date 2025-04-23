@@ -5,11 +5,8 @@
         <p>Hola!</p>
         <SvgComponent :type="'hello'" />
       </div>
-      <div class="restart-header">
+      <div>
         <p class="subtitle">Inicia un chat, estamos aquí para ayudarte.</p>
-        <button>
-          <SvgComponent />
-        </button>
       </div>
     </div>
     <div class="chat-messages">
@@ -82,7 +79,8 @@ const sendMessage = () => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
+    BlinkMacSystemFont, sans-serif;
   overflow: hidden;
 }
 
@@ -118,21 +116,14 @@ const sendMessage = () => {
   font-size: 2rem;
 }
 
-.restart-header {
+/* .restart-header {
   display: flex;
   justify-content: space-between;
-}
+} */
 
-.restart-header button {
-  border: none;
-  border-radius: 5px;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.restart-header button:hover {
+/* .restart-header button:hover {
   background-color: #252842;
-}
+} */
 
 .chat-header h3 {
   margin: 0;
@@ -141,15 +132,14 @@ const sendMessage = () => {
 }
 
 .subtitle {
-  margin: 8px 0 0 0;
-  font-size: 14px;
-  opacity: 0.8;
+  margin: 0 0 0 0;
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
 
 /* Panel mensajes */
 
 .chat-messages {
-  flex: 1;
   overflow-y: auto;
   background-color: #f8f9fc;
   height: 80%;
