@@ -6,7 +6,6 @@
           <p>Hola!</p>
           <SvgComponent :type="'hello'" />
         </div>
-
         <div class="subtitle">
           <p>Inicia un chat, estamos aquí para ayudarte.</p>
         </div>
@@ -17,6 +16,7 @@
     </div>
     <div class="chat-input">
       <textarea
+        ref="textareaRef"
         type="text"
         v-model="message"
         placeholder="Empieza a preguntar..."
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import SvgComponent from "./SvgComponent.vue";
 import ChatBubbleComponent from "./ChatBubbleComponent.vue";
 import { useChatMessages } from "../composable/useMessages";
@@ -42,6 +42,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const textareaRef = ref(null);
 
 const { addMessage } = useChatMessages();
 const message = ref("");
@@ -62,11 +64,21 @@ const sendMessage = () => {
         message: message.value.trim(),
         agentId: props.idAgent,
       },
-      (val) => {}
+      (val) => {} // Callback opcional
     );
     message.value = "";
+
+    // if (textareaRef.value) {
+    //   textareaRef.value.focus();
+    // }
   }
 };
+
+onMounted(() => {
+  if (textareaRef.value) {
+    textareaRef.value.focus();
+  }
+});
 </script>
 
 <style scoped>
@@ -142,9 +154,10 @@ const sendMessage = () => {
 /* Panel mensajes */
 
 .chat-messages {
+  flex-grow: 1;
   overflow-y: auto;
   background-color: #f8f9fc;
-  height: 80%;
+  padding: 10px;
 }
 
 .message {
@@ -153,6 +166,7 @@ const sendMessage = () => {
   border-radius: 5px;
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  max-width: 80%;
 }
 
 .message p {
@@ -184,17 +198,19 @@ const sendMessage = () => {
   background-color: #d2e3fc;
 }
 
-/* contenedor enviar */
 .chat-input {
-  padding: 5px;
+  padding: 10px;
   display: flex;
-  gap: 5px;
-  height: 5%;
+  gap: 10px;
+  min-height: 50px;
+  height: auto;
+  background-color: #fff;
+  align-items: center;
 }
 
 .send-button {
-  width: auto;
-  height: auto;
+  width: 40px;
+  height: 40px;
   border-radius: 5px;
   background-color: #131844;
   color: white;
@@ -204,31 +220,32 @@ const sendMessage = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  justify-items: center;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .send-button:hover {
   transform: scale(1.05);
+  background-color: #1a205a;
 }
 
 textarea {
-  width: 100%;
-  height: 100%;
-  padding: 5px;
+  flex-grow: 1;
+  height: auto;
+  min-height: 40px;
+  max-height: 100px;
+  padding: 8px 10px;
   outline: none;
   background-color: #fff;
   resize: none;
-  border-top: 1px solid #ddd;
-  border-right: none;
-  border-bottom: none;
-  border-left: none;
-  line-height: 1.2;
-  text-align: justify;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  line-height: 1.4;
   font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
     BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 14px;
   color: #474747;
+  overflow-y: auto;
 }
 </style>

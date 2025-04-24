@@ -598,7 +598,7 @@ onMounted(() => {
 
 .chat-button-greet-animation {
   animation-name: greet-wave;
-  animation-duration: 0.5s;
+  animation-duration: 1s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   transform-origin: center center;
