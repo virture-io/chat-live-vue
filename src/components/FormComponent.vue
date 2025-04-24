@@ -1,12 +1,15 @@
 <template>
   <div class="chat-panel">
     <div class="chat-header">
-      <div class="hello">
-        <p>Hola!</p>
-        <SvgComponent :type="'hello'" />
-      </div>
       <div>
-        <p class="subtitle">Inicia un chat, estamos aquí para ayudarte.</p>
+        <div class="hello">
+          <p>Hola!</p>
+          <SvgComponent :type="'hello'" />
+        </div>
+
+        <div class="subtitle">
+          <p>Inicia un chat, estamos aquí para ayudarte.</p>
+        </div>
       </div>
     </div>
     <div class="chat-messages">
@@ -88,6 +91,17 @@ const sendMessage = () => {
   .chat-panel {
     width: 80vw;
   }
+
+  .hello p {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    margin: 0 0 0 0;
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -95,46 +109,34 @@ const sendMessage = () => {
     width: 30vw;
     height: 70vh;
   }
+
+  .hello p {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    margin: 0 0 0 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
 }
 
 /* encabezado saludo */
+
 .chat-header {
-  padding: 20px;
+  padding: 0 4px 0 4px;
   background-color: #131844;
   color: white;
-  height: 20%;
+  height: auto;
+  font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
+    BlinkMacSystemFont, sans-serif;
 }
 
 .hello {
   display: flex;
-  gap: 2px;
-  justify-items: center;
+  gap: 1px;
   align-items: center;
-}
-
-.hello p {
-  font-size: 2rem;
-}
-
-/* .restart-header {
-  display: flex;
-  justify-content: space-between;
-} */
-
-/* .restart-header button:hover {
-  background-color: #252842;
-} */
-
-.chat-header h3 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.subtitle {
-  margin: 0 0 0 0;
-  font-size: 1.2rem;
-  opacity: 0.9;
 }
 
 /* Panel mensajes */
