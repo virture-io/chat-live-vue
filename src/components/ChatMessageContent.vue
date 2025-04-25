@@ -4,7 +4,7 @@
 
 <script setup>
 import { computed } from "vue";
-import DOMPurify from "dompurify"; // ¡Importante para seguridad!
+import DOMPurify from "dompurify";
 
 const props = defineProps({
   content: {
@@ -14,39 +14,72 @@ const props = defineProps({
   },
 });
 
-// Expresiones regulares
-const urlRegex =
-  /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-const imageRegex =
-  /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\.(?:png|jpg|jpeg|gif|webp|bmp|svg)\b/gi;
+const markdownImageRegex =
+  /!\[(.*?)\]\(((https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]\.(?:png|jpg|jpeg|gif|webp|bmp|svg))\b\)/gi;
+const markdownLinkRegex =
+  /\[(.*?)\]\((((https?|ftp|file):\/\/)[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\)/gi;
+const standaloneImageUrlRegex =
+  /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]\.(?:png|jpg|jpeg|gif|webp|bmp|svg))\b/gi;
+const standaloneUrlRegex =
+  /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])(?!.*\.(?:png|jpg|jpeg|gif|webp|bmp|svg)\b)/gi;
+
 const boldRegex = /\*\*(.*?)\*\*/g;
 
 const formattedContent = computed(() => {
-  let html = props.content || "";
+  if (!props.content) return "";
+  let html = props.content;
+
+  const processedUrls = new Set();
 
   html = html.replace(/\n/g, "<br>");
 
-  // 3. Procesar imágenes
-  html = html.replace(imageRegex, (match) => {
-    return `<div class="image-container"><img src="${match}" alt="Imagen cargada" loading="lazy" class="chat-image loading" onload="this.classList.remove('loading'); this.classList.add('loaded');" onerror="this.parentElement.style.display='none';"></div>`;
+  html = html.replace(markdownImageRegex, (match, altText, fullUrl) => {
+    if (processedUrls.has(fullUrl)) return altText || "";
+    processedUrls.add(fullUrl);
+    const alt = altText || "Imagen cargada";
+    return (
+      `<div class="image-container">` +
+      `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">` +
+      `<img src="${fullUrl}" alt="${alt}" loading="lazy" class="chat-image loading" onload="this.classList.remove('loading'); this.classList.add('loaded');" onerror="this.closest('.image-container').style.display='none';">` +
+      `</a>` +
+      `</div>`
+    );
   });
 
-  // 4. Procesar enlaces (que no sean ya imágenes)
-  html = html.replace(urlRegex, (match) => {
-    if (!/\.(?:png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(match)) {
-      return `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`;
-    }
-    return match;
+  html = html.replace(markdownLinkRegex, (match, linkText, fullUrl) => {
+    if (processedUrls.has(fullUrl)) return linkText;
+    if (processedUrls.has(match)) return match;
+
+    processedUrls.add(fullUrl);
+    processedUrls.add(match);
+    return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
   });
 
-  // 5. Procesar negritas
+  html = html.replace(standaloneImageUrlRegex, (match) => {
+    if (processedUrls.has(match)) return match;
+    processedUrls.add(match);
+    const fullUrl = match;
+    const alt = "Imagen cargada";
+    return (
+      `<div class="image-container">` +
+      `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">` +
+      `<img src="${fullUrl}" alt="${alt}" loading="lazy" class="chat-image loading" onload="this.classList.remove('loading'); this.classList.add('loaded');" onerror="this.closest('.image-container').style.display='none';">` +
+      `</a>` +
+      `</div>`
+    );
+  });
+
+  html = html.replace(standaloneUrlRegex, (match) => {
+    if (processedUrls.has(match)) return match;
+    processedUrls.add(match);
+    return `<a href="${match}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+  });
+
   html = html.replace(boldRegex, "<strong>$1</strong>");
-
-  // 7. ¡Sanitizar el HTML final con DOMPurify!
 
   const cleanHtml = DOMPurify.sanitize(html, {
     USE_PROFILES: { html: true },
-    ADD_TAGS: ["strong", "em", "code", "br", "a", "img", "div"],
+    ADD_TAGS: ["strong", "br", "a", "img", "div"],
     ADD_ATTR: [
       "href",
       "target",
@@ -58,7 +91,7 @@ const formattedContent = computed(() => {
       "style",
       "onload",
       "onerror",
-    ], // Atributos que usamos
+    ],
   });
 
   return cleanHtml;
@@ -72,8 +105,19 @@ const formattedContent = computed(() => {
   word-break: break-all;
 }
 
-.message-content :deep(a:hover) {
-  opacity: 0.8;
+/* .message-content :deep(a:hover) {
+  opacity: 0.5;
+} */
+
+/* .message-content :deep(.image-container > a:hover) {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+} */
+
+
+.message-content :deep(.image-container > a:hover img.chat-image) {
+  transform: scale(1.02);
+  filter: brightness(65%)
 }
 
 .message-content :deep(strong) {
@@ -85,10 +129,11 @@ const formattedContent = computed(() => {
   max-height: 300px;
   height: auto;
   border-radius: 8px;
-  margin: 4px 0;
+  margin: 0;
   display: block;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .message-content :deep(img.chat-image.loading) {
@@ -106,6 +151,12 @@ const formattedContent = computed(() => {
   max-width: 100%;
   border-radius: 8px;
   overflow: hidden;
+}
+
+.message-content :deep(.image-container > a) {
+  display: block;
+  text-decoration: none;
+  border-radius: 8px;
 }
 
 .message-content :deep(.link-preview) {

@@ -1,15 +1,11 @@
 <template>
   <div class="chat-panel">
     <div class="chat-header">
-      <div>
-        <div class="hello">
-          <p>Hola!</p>
-          <SvgComponent :type="'hello'" />
-        </div>
-        <div class="subtitle">
-          <p>Inicia un chat, estamos aquí para ayudarte.</p>
-        </div>
+      <div class="sub-head">
+        <span>Hola!</span>
+        <SvgComponent :type="'hello'" />
       </div>
+      <span>Inicia un chat, estamos aquí para ayudarte.</span>
     </div>
     <div class="chat-messages">
       <ChatBubbleComponent />
@@ -97,22 +93,16 @@ onMounted(() => {
   font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
     BlinkMacSystemFont, sans-serif;
   overflow: hidden;
+  margin: 0px;
 }
 
 @media (max-width: 1024px) {
   .chat-panel {
-    width: 80vw;
+    width: 99vw;
   }
 
-  .hello p {
+  .sub-head {
     font-size: 1.5rem;
-    font-weight: 600;
-  }
-
-  .subtitle {
-    margin: 0 0 0 0;
-    font-size: 0.8rem;
-    opacity: 0.9;
   }
 }
 
@@ -122,33 +112,34 @@ onMounted(() => {
     height: 70vh;
   }
 
-  .hello p {
+  .sub-head {
     font-size: 2rem;
-    font-weight: 600;
-  }
-
-  .subtitle {
-    margin: 0 0 0 0;
-    font-size: 1rem;
-    opacity: 0.9;
   }
 }
 
 /* encabezado saludo */
 
 .chat-header {
-  padding: 0 4px 0 4px;
+  width: 100%;
+  height: auto;
+  padding: 1px 4px 1px 4px;
   background-color: #131844;
   color: white;
-  height: auto;
   font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
     BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0px;
 }
 
-.hello {
+.sub-head {
+  padding: 3px;
   display: flex;
-  gap: 1px;
   align-items: center;
+  font-weight: 600;
+  font-family: "Inter", "Segoe UI", "Open Sans", -apple-system,
+    BlinkMacSystemFont, sans-serif;
 }
 
 /* Panel mensajes */
@@ -170,7 +161,7 @@ onMounted(() => {
 }
 
 .message p {
-  margin: 0;
+  margin: 0px;
   color: #4a4a4a;
   font-size: 14px;
   line-height: 1.5;

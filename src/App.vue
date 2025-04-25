@@ -127,7 +127,9 @@ onMounted(() => {
             "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
           }}
         </p>
-        <button @click="clicStartChat" class="greeting-ok-button">Chat</button>
+        <button @click="clicStartChat" class="greeting-ok-button">
+          ¡Chatear ahora!
+        </button>
       </div>
     </transition>
 
@@ -155,7 +157,7 @@ onMounted(() => {
 .chat-container {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  left: 2px;
   z-index: 1000;
 }
 
