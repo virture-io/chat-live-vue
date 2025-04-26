@@ -18,5 +18,6 @@ import "vue-chat-widget";
   .idAgent="'id'"
   .api_key="'key'"
   .welcomeMessage="'welcome'"
+  .iconButton="'url-picture'"
 ></vue-chat-widget>
 ```
