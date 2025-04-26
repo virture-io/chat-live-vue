@@ -137,16 +137,6 @@ onMounted(() => {
       </div>
     </transition>
 
-    <!-- <button
-      ref="chatButtonRef"
-      class="chat-button"
-      @click="toggleChat"
-      :class="{ active: isChatOpen }"
-    >
-      <SvgComponent v-if="!isChatOpen" type="iconBtn" />
-      <span v-else>✕</span>
-    </button> -->
-
     <button
       ref="chatButtonRef"
       class="chat-button"
@@ -160,6 +150,7 @@ onMounted(() => {
           alt="Chat logo"
           class="chat-button-icon chat-button-image"
         />
+
         <SvgComponent
           v-else
           type="iconBtn"
@@ -351,19 +342,13 @@ onMounted(() => {
 
 @keyframes greet-wave {
   0% {
-    transform: rotate(0deg) scale(1);
-  }
-  25% {
-    transform: rotate(15deg) scale(1.1);
+    transform: translateY(0);
   }
   50% {
-    transform: rotate(-10deg) scale(1.1);
-  }
-  75% {
-    transform: rotate(5deg) scale(1.1);
+    transform: translateY(-8px);
   }
   100% {
-    transform: rotate(0deg) scale(1);
+    transform: translateY(0);
   }
 }
 
