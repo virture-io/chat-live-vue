@@ -8,6 +8,7 @@ const ChatElement = defineCustomElement(Chat, {
     idAgent: String,
     api_key: String,
     welcomeMessage: String,
+    iconButton: String,
   },
 });
 

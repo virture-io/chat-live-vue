@@ -21,6 +21,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  iconButton: {
+    type: String,
+    required: true,
+  },
 });
 
 const isChatOpen = ref(false);
@@ -133,7 +137,7 @@ onMounted(() => {
       </div>
     </transition>
 
-    <button
+    <!-- <button
       ref="chatButtonRef"
       class="chat-button"
       @click="toggleChat"
@@ -141,10 +145,33 @@ onMounted(() => {
     >
       <SvgComponent v-if="!isChatOpen" type="iconBtn" />
       <span v-else>✕</span>
+    </button> -->
+
+    <button
+      ref="chatButtonRef"
+      class="chat-button"
+      @click="toggleChat"
+      :class="{ active: isChatOpen }"
+    >
+      <template v-if="!isChatOpen">
+        <img
+          v-if="props.iconButton"
+          :src="props.iconButton"
+          alt="Chat logo"
+          class="chat-button-icon chat-button-image"
+        />
+        <SvgComponent
+          v-else
+          type="iconBtn"
+          class="chat-button-icon chat-button-svg"
+        />
+      </template>
+
+      <span v-else class="chat-button-close-icon">✕</span>
     </button>
 
     <div v-if="isChatOpen" class="form-container">
-      <FormComponent :idAgent="props.idAgent" />
+      <FormComponent :idAgent="props.idAgent" :api_key="props.api_key" />
     </div>
   </div>
 </template>
@@ -299,14 +326,10 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: transparent;
-  color: white;
+  overflow: hidden;
+  position: relative;
+  padding: 0;
   border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   position: relative;
@@ -350,5 +373,35 @@ onMounted(() => {
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   transform-origin: center center;
+}
+
+.chat-button-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-button-image {
+  object-fit: cover;
+}
+
+.chat-button-svg :deep(svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-button-close-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 24px;
+  line-height: 1;
+  color: white;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
 }
 </style>

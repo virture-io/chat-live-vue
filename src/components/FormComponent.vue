@@ -37,6 +37,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  api_key: {
+    type: String,
+    required: true,
+  },
 });
 
 const textareaRef = ref(null);
@@ -59,6 +63,7 @@ const sendMessage = () => {
         userUUID: id ?? "",
         message: message.value.trim(),
         agentId: props.idAgent,
+        api_key: props.api_key,
       },
       (val) => {} // Callback opcional
     );
