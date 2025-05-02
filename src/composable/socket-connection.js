@@ -1,8 +1,9 @@
-import { io } from "socket.io-client";
+import { Manager } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
 
 let socket = null;
+let manager = null;
 
 export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   if (socket) return socket;
@@ -19,13 +20,15 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   // Obtener el ID del chat si existe
   let idThread = localStorage.getItem("userUUID") ?? "";
 
-  socket = io(socketUrl, {
+  manager = new Manager(socketUrl, {
     transports: ["websocket", "polling"],
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
     query: { idOwner: userUUID, api_key: api_key },
   });
+
+  socket = manager.socket("/chat");
 
   socket.on("connect", () => {
     console.log("✅ Socket conectado correctamente");
