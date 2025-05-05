@@ -1,6 +1,7 @@
 import { Manager } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
+import { get_utm } from "./get_utm";
 
 let socket = null;
 let manager = null;
@@ -9,6 +10,8 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   if (socket) return socket;
 
   const { setValueMessages, addMessage } = useChatMessages();
+  let currentUrl = window.location.href;
+  get_utm(currentUrl);
 
   // Obtener o generar un UUID persistente para el usuario
   let userUUID = localStorage.getItem("userUUID");

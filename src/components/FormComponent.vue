@@ -64,14 +64,12 @@ const sendMessage = () => {
         message: message.value.trim(),
         agentId: props.idAgent,
         api_key: props.api_key,
+        utm_source: localStorage.getItem("utm_source"),
+        utm_medium: localStorage.getItem("utm_medium"),
       },
       (val) => {} // Callback opcional
     );
     message.value = "";
-
-    // if (textareaRef.value) {
-    //   textareaRef.value.focus();
-    // }
   }
 };
 
