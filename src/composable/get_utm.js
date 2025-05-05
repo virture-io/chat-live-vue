@@ -4,8 +4,8 @@ export const get_utm = (url) => {
   const newUrl = new URL(url);
   const searchParams = newUrl.searchParams;
 
-  const utmSource = searchParams.get("utm_source") ?? "";
-  const utmMedium = searchParams.get("utm_medium") ?? "";
+  const utmSource = searchParams.get("utm_source");
+  const utmMedium = searchParams.get("utm_medium");
 
   if (!source) {
     localStorage.setItem("utm_source", utmSource);
