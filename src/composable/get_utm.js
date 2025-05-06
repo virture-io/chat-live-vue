@@ -7,11 +7,11 @@ export const get_utm = (url) => {
   const utmSource = searchParams.get("utm_source");
   const utmMedium = searchParams.get("utm_medium");
 
-  if (!source) {
+  if (source) {
     localStorage.setItem("utm_source", utmSource);
   }
 
-  if (!medium) {
+  if (medium) {
     localStorage.setItem("utm_medium", utmMedium);
   }
 };
