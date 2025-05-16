@@ -34,8 +34,6 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   socket = manager.socket("/chat");
 
   socket.on("connect", () => {
-    console.log("✅ Socket conectado correctamente");
-
     socket.emit(
       "connected-chat",
       { userUUID: idThread, agentId: idAgent },
@@ -47,9 +45,7 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
     );
   });
 
-  socket.on("disconnect", () => {
-    console.log("❌ Socket desconectado");
-  });
+  socket.on("disconnect", () => {});
 
   socket.on("response", (val) => {
     addMessage(val);
