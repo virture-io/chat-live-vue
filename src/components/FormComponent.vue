@@ -101,7 +101,7 @@ onMounted(() => {
 
 @media (max-width: 1024px) {
   .chat-panel {
-    width: 99vw;
+    width: 95vw;
   }
 
   .sub-head {
@@ -111,7 +111,7 @@ onMounted(() => {
 
 @media (min-width: 1025px) {
   .chat-panel {
-    width: 30vw;
+    width: 25vw;
     height: 70vh;
   }
 

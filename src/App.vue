@@ -175,7 +175,7 @@ onMounted(() => {
 .chat-container {
   position: fixed;
   bottom: 20px;
-  left: 2px;
+  left: 30px;
   z-index: 1000;
 }
 
@@ -255,6 +255,11 @@ onMounted(() => {
   .greeting-modal {
     width: 60vw;
   }
+
+  .chat-container{
+    left: 10px;
+  }
+  
 }
 @media (min-width: 801px) {
   .greeting-modal {
