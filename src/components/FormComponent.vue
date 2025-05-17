@@ -49,6 +49,7 @@ const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
 const id = localStorage.getItem("userUUID");
+const now = new Date();
 
 const sendMessage = () => {
   let currentUrl = window.location.href;
@@ -67,9 +68,9 @@ const sendMessage = () => {
         api_key: props.api_key,
         utm_source: localStorage.getItem("utm_source"),
         utm_medium: localStorage.getItem("utm_medium"),
-        urlPath: currentUrl,
+        navigation: { urlPath: currentUrl, time: now.toISOString() },
       },
-      (val) => {} // Callback opcional
+      (val) => {}
     );
     message.value = "";
   }
