@@ -51,6 +51,7 @@ const socket = useSocket();
 const id = localStorage.getItem("userUUID");
 
 const sendMessage = () => {
+  let currentUrl = window.location.href;
   if (message.value.trim()) {
     const form = {
       content: message.value.trim(),
@@ -66,6 +67,7 @@ const sendMessage = () => {
         api_key: props.api_key,
         utm_source: localStorage.getItem("utm_source"),
         utm_medium: localStorage.getItem("utm_medium"),
+        urlPath: currentUrl,
       },
       (val) => {} // Callback opcional
     );
