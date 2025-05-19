@@ -45,15 +45,23 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
     );
   });
 
-  const interval = setInterval(() => {
-    let urlCurrent = window.location.href;
-    let now = new Date();
-    let userNavigation = {
-      urlPath: urlCurrent,
-      time: now.toISOString(),
-      clientId: idThread,
-    };
-    socket.emit("navigation-path-chat", userNavigation);
+  let lastPath = "";
+
+  setInterval(() => {
+    const currentPath = window.location.href;
+
+    if (currentPath !== lastPath) {
+      const now = new Date();
+      const userNavigation = {
+        urlPath: currentPath,
+        time: now.toISOString(),
+        clientId: idThread,
+      };
+
+      socket.emit("navigation-path-chat", userNavigation);
+
+      lastPath = currentPath;
+    }
   }, 2000);
 
   socket.on("disconnect", () => {});
