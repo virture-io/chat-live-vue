@@ -1,28 +1,30 @@
 <template>
-  <div class="chat-panel">
-    <div class="chat-header">
-      <div class="sub-head">
-        <span>Hola!</span>
-        <SvgComponent :type="'hello'" />
+  <Transition name="slide-fade">
+    <div v-if="isVisible" class="chat-panel">
+      <div class="chat-header">
+        <div class="sub-head">
+          <span>Hola!</span>
+          <SvgComponent :type="'hello'" />
+        </div>
+        <span>Inicia un chat, estamos aquí para ayudarte.</span>
       </div>
-      <span>Inicia un chat, estamos aquí para ayudarte.</span>
+      <div class="chat-messages">
+        <ChatBubbleComponent />
+      </div>
+      <div class="chat-input">
+        <textarea
+          ref="textareaRef"
+          type="text"
+          v-model="message"
+          placeholder="Empieza a preguntar..."
+          @keyup.enter="sendMessage"
+        ></textarea>
+        <button class="send-button" @click="sendMessage">
+          <SvgComponent type="sendBtn" />
+        </button>
+      </div>
     </div>
-    <div class="chat-messages">
-      <ChatBubbleComponent />
-    </div>
-    <div class="chat-input">
-      <textarea
-        ref="textareaRef"
-        type="text"
-        v-model="message"
-        placeholder="Empieza a preguntar..."
-        @keyup.enter="sendMessage"
-      ></textarea>
-      <button class="send-button" @click="sendMessage">
-        <SvgComponent type="sendBtn" />
-      </button>
-    </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -44,7 +46,7 @@ const props = defineProps({
 });
 
 const textareaRef = ref(null);
-
+const isVisible = ref(false);
 const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
@@ -80,7 +82,15 @@ onMounted(() => {
   if (textareaRef.value) {
     textareaRef.value.focus();
   }
+
+  setTimeout(() => {
+    isVisible.value = true;
+  }, 100);
 });
+
+const closePanel = () => {
+  isVisible.value = false;
+};
 </script>
 
 <style scoped>
@@ -244,5 +254,36 @@ textarea {
   font-size: 14px;
   color: #474747;
   overflow-y: auto;
+}
+
+/* Animaciones */
+.slide-fade-enter-active {
+  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s ease-in;
+  transform-origin: center;
+}
+
+.slide-fade-enter-from {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.slide-fade-enter-to {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.slide-fade-leave-from {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.slide-fade-leave-to {
+  transform: scale(0.8);
+  opacity: 0;
 }
 </style>
