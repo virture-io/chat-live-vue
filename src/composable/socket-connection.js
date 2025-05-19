@@ -45,6 +45,13 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
     );
   });
 
+  const interval = setInterval(() => {
+    const urlCurrent = window.location.href;
+    const now = new Date();
+    const userNavigation = { urlPath: urlCurrent, time: now.toISOString() };
+    socket.emit("navigation-path-chat", userNavigation);
+  }, 2000);
+
   socket.on("disconnect", () => {});
 
   socket.on("response", (val) => {

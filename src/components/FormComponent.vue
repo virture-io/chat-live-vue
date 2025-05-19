@@ -51,10 +51,8 @@ const { addMessage } = useChatMessages();
 const message = ref("");
 const socket = useSocket();
 const id = localStorage.getItem("userUUID");
-const now = new Date();
 
 const sendMessage = () => {
-  let currentUrl = window.location.href;
   if (message.value.trim()) {
     const form = {
       content: message.value.trim(),
@@ -70,7 +68,6 @@ const sendMessage = () => {
         api_key: props.api_key,
         utm_source: localStorage.getItem("utm_source"),
         utm_medium: localStorage.getItem("utm_medium"),
-        navigation: { urlPath: currentUrl, time: now.toISOString() },
       },
       (val) => {}
     );
