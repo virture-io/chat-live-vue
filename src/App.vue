@@ -80,13 +80,13 @@ onMounted(() => {
     };
 
     typingTimer = setTimeout(() => {
-      if (openChat.value && !showGreetingModal.value) {
+      if (!openChat.value && !showGreetingModal.value) {
         showTypingIndicator.value = true;
       }
     }, 1000);
 
     modalTimer = setTimeout(() => {
-      if (openChat.value) {
+      if (!openChat.value) {
         showTypingIndicator.value = false;
         showGreetingModal.value = true;
 
