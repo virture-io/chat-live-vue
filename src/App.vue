@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
 import { socketConnection } from "./composable/socket-connection";
+import { useChatMessages } from "./composable/useMessages";
 
 const props = defineProps({
   socketUrl: {
@@ -27,10 +28,11 @@ const props = defineProps({
   },
 });
 
-const isChatOpen = ref(false);
 const chatButtonRef = ref(null);
 const showGreetingModal = ref(false);
 const showTypingIndicator = ref(false);
+const { openChat, setValueOpenChat } = useChatMessages();
+//const isChatOpen = ref(openChat.value);
 
 const toggleChat = () => {
   if (showGreetingModal.value) {
@@ -39,7 +41,8 @@ const toggleChat = () => {
   if (showTypingIndicator.value) {
     showTypingIndicator.value = false;
   }
-  isChatOpen.value = !isChatOpen.value;
+  //isChatOpen.value = !isChatOpen.value;
+  setValueOpenChat(!openChat.value);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
 };
 
@@ -50,7 +53,8 @@ const dismissGreeting = () => {
 
 const clicStartChat = () => {
   showGreetingModal.value = false;
-  isChatOpen.value = true;
+  //isChatOpen.value = true;
+  setValueOpenChat(true);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
 };
 
@@ -76,13 +80,13 @@ onMounted(() => {
     };
 
     typingTimer = setTimeout(() => {
-      if (!isChatOpen.value && !showGreetingModal.value) {
+      if (openChat.value && !showGreetingModal.value) {
         showTypingIndicator.value = true;
       }
     }, 1000);
 
     modalTimer = setTimeout(() => {
-      if (!isChatOpen.value) {
+      if (openChat.value) {
         showTypingIndicator.value = false;
         showGreetingModal.value = true;
 
@@ -97,7 +101,7 @@ onMounted(() => {
       chatButtonRef.value?.classList.remove("chat-button-greet-animation");
     }, 15000);
 
-    unwatchChatOpen = watch(isChatOpen, (newValue) => {
+    unwatchChatOpen = watch(openChat, (newValue) => {
       if (newValue) {
         cleanupEffects();
       }
@@ -141,9 +145,9 @@ onMounted(() => {
       ref="chatButtonRef"
       class="chat-button"
       @click="toggleChat"
-      :class="{ active: isChatOpen }"
+      :class="{ active: openChat }"
     >
-      <template v-if="!isChatOpen">
+      <template v-if="!openChat">
         <img
           v-if="props.iconButton"
           :src="props.iconButton"
@@ -161,7 +165,7 @@ onMounted(() => {
       <span v-else class="chat-button-close-icon">✕</span>
     </button>
 
-    <div v-if="isChatOpen" class="form-container">
+    <div v-if="openChat" class="form-container">
       <FormComponent :idAgent="props.idAgent" :api_key="props.api_key" />
     </div>
   </div>
@@ -256,10 +260,9 @@ onMounted(() => {
     width: 60vw;
   }
 
-  .chat-container{
+  .chat-container {
     left: 10px;
   }
-  
 }
 @media (min-width: 801px) {
   .greeting-modal {
