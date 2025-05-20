@@ -56,6 +56,7 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
         urlPath: currentPath,
         time: now.toISOString(),
         clientId: idThread,
+        instance: idAgent,
       };
 
       socket.emit("navigation-path-chat", userNavigation);
