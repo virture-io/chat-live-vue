@@ -41,6 +41,58 @@ const props = defineProps({
   welcomeButtonHoverColor: {
     type: String,
     default: '#0056b3'
+  },
+  chatPanelBackground: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatHeaderBackground: {
+    type: String,
+    default: '#131844'
+  },
+  chatHeaderTextColor: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatMessagesBackground: {
+    type: String,
+    default: '#f8f9fc'
+  },
+  chatInputBackground: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatInputTextColor: {
+    type: String,
+    default: '#474747'
+  },
+  chatInputBorderColor: {
+    type: String,
+    default: '#ccc'
+  },
+  sendButtonBackground: {
+    type: String,
+    default: '#131844'
+  },
+  sendButtonHoverBackground: {
+    type: String,
+    default: '#1a205a'
+  },
+  userMessageBackground: {
+    type: String,
+    default: '#15be86'
+  },
+  userMessageTextColor: {
+    type: String,
+    default: '#ffffff'
+  },
+  botMessageBackground: {
+    type: String,
+    default: '#f5f5f5'
+  },
+  botMessageTextColor: {
+    type: String,
+    default: '#3f3f3f'
   }
 });
 
@@ -175,6 +227,10 @@ onMounted(() => {
       class="chat-button"
       @click="toggleChat"
       :class="{ active: openChat }"
+      :style="openChat ? {
+        backgroundColor: chatHeaderBackground,
+        color: chatHeaderTextColor
+      } : {}"
     >
       <template v-if="!openChat">
         <img
@@ -191,11 +247,29 @@ onMounted(() => {
         />
       </template>
 
-      <span v-else class="chat-button-close-icon">✕</span>
+      <span v-else class="chat-button-close-icon" :style="{
+        color: chatHeaderTextColor
+      }">✕</span>
     </button>
 
     <div v-if="openChat" class="form-container">
-      <FormComponent :idAgent="props.idAgent" :api_key="props.api_key" />
+      <FormComponent 
+        :idAgent="props.idAgent" 
+        :api_key="props.api_key"
+        :chatPanelBackground="chatPanelBackground"
+        :chatHeaderBackground="chatHeaderBackground"
+        :chatHeaderTextColor="chatHeaderTextColor"
+        :chatMessagesBackground="chatMessagesBackground"
+        :chatInputBackground="chatInputBackground"
+        :chatInputTextColor="chatInputTextColor"
+        :chatInputBorderColor="chatInputBorderColor"
+        :sendButtonBackground="sendButtonBackground"
+        :sendButtonHoverBackground="sendButtonHoverBackground"
+        :userMessageBackground="userMessageBackground"
+        :userMessageTextColor="userMessageTextColor"
+        :botMessageBackground="botMessageBackground"
+        :botMessageTextColor="botMessageTextColor"
+      />
     </div>
   </div>
 </template>
@@ -351,7 +425,7 @@ onMounted(() => {
 }
 
 .chat-button.active {
-  background-color: #131844;
+  background-color: v-bind(chatHeaderBackground);
 }
 
 .form-container {
@@ -402,8 +476,6 @@ onMounted(() => {
   height: 100%;
   font-size: 24px;
   line-height: 1;
-  color: white;
-  background-color: transparent;
   position: relative;
   z-index: 1;
 }

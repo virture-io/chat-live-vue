@@ -7,6 +7,10 @@
         'message',
         item.role === 'user' ? 'message-sent' : 'message-received',
       ]"
+      :style="{
+        backgroundColor: item.role === 'user' ? userMessageBackground : botMessageBackground,
+        color: item.role === 'user' ? userMessageTextColor : botMessageTextColor
+      }"
     >
       <ChatMessageContent :content="item.content" />
     </div>
@@ -20,6 +24,25 @@ import ChatMessageContent from "./ChatMessageContent.vue";
 
 const { messages } = useChatMessages();
 const messagesContainer = ref(null);
+
+const props = defineProps({
+  userMessageBackground: {
+    type: String,
+    default: '#15be86'
+  },
+  userMessageTextColor: {
+    type: String,
+    default: '#ffffff'
+  },
+  botMessageBackground: {
+    type: String,
+    default: '#f5f5f5'
+  },
+  botMessageTextColor: {
+    type: String,
+    default: '#3f3f3f'
+  }
+});
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -77,14 +100,10 @@ watch(messages, scrollToBottom, { deep: true });
 }
 
 .message-sent {
-  background-color: #15be86;
-  color: white;
   margin-left: auto;
 }
 
 .message-received {
-  background-color: #f5f5f5;
-  color: #3f3f3f;
   margin-right: auto;
 }
 
@@ -94,12 +113,6 @@ watch(messages, scrollToBottom, { deep: true });
   opacity: 0.7;
   align-self: flex-end;
   color: inherit;
-}
-.message-sent .timestamp {
-  color: rgba(255, 255, 255, 0.7);
-}
-.message-received .timestamp {
-  color: rgba(63, 63, 63, 0.7);
 }
 
 @media (max-width: 480px) {

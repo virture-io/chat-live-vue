@@ -1,25 +1,44 @@
 <template>
   <Transition name="slide-fade">
-    <div v-if="isVisible" class="chat-panel">
-      <div class="chat-header">
+    <div v-if="isVisible" class="chat-panel" :style="{ backgroundColor: chatPanelBackground }">
+      <div class="chat-header" :style="{ backgroundColor: chatHeaderBackground, color: chatHeaderTextColor }">
         <div class="sub-head">
           <span>Hola!</span>
           <SvgComponent :type="'hello'" />
         </div>
         <span>Inicia un chat, estamos aquí para ayudarte.</span>
       </div>
-      <div class="chat-messages">
-        <ChatBubbleComponent />
+      <div class="chat-messages" :style="{ backgroundColor: chatMessagesBackground }">
+        <ChatBubbleComponent 
+          :userMessageBackground="userMessageBackground"
+          :userMessageTextColor="userMessageTextColor"
+          :botMessageBackground="botMessageBackground"
+          :botMessageTextColor="botMessageTextColor"
+        />
       </div>
-      <div class="chat-input">
+      <div class="chat-input" :style="{ backgroundColor: chatInputBackground }">
         <textarea
           ref="textareaRef"
           type="text"
           v-model="message"
           placeholder="Empieza a preguntar..."
           @keyup.enter="sendMessage"
+          :style="{
+            backgroundColor: chatInputBackground,
+            color: chatInputTextColor,
+            borderColor: chatInputBorderColor
+          }"
         ></textarea>
-        <button class="send-button" @click="sendMessage">
+        <button 
+          class="send-button" 
+          @click="sendMessage"
+          :style="{
+            backgroundColor: sendButtonBackground,
+            '&:hover': {
+              backgroundColor: sendButtonHoverBackground
+            }
+          }"
+        >
           <SvgComponent type="sendBtn" />
         </button>
       </div>
@@ -43,6 +62,58 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  chatPanelBackground: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatHeaderBackground: {
+    type: String,
+    default: '#131844'
+  },
+  chatHeaderTextColor: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatMessagesBackground: {
+    type: String,
+    default: '#f8f9fc'
+  },
+  chatInputBackground: {
+    type: String,
+    default: '#ffffff'
+  },
+  chatInputTextColor: {
+    type: String,
+    default: '#474747'
+  },
+  chatInputBorderColor: {
+    type: String,
+    default: '#ccc'
+  },
+  sendButtonBackground: {
+    type: String,
+    default: '#131844'
+  },
+  sendButtonHoverBackground: {
+    type: String,
+    default: '#1a205a'
+  },
+  userMessageBackground: {
+    type: String,
+    default: '#15be86'
+  },
+  userMessageTextColor: {
+    type: String,
+    default: '#ffffff'
+  },
+  botMessageBackground: {
+    type: String,
+    default: '#f5f5f5'
+  },
+  botMessageTextColor: {
+    type: String,
+    default: '#3f3f3f'
+  }
 });
 
 const textareaRef = ref(null);
@@ -98,7 +169,6 @@ const closePanel = () => {
   left: 0;
   width: 80vw;
   height: 80vh;
-  background-color: #ffffff;
   border-radius: 6px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
