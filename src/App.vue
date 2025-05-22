@@ -26,6 +26,22 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  welcomeBackgroundColor: {
+    type: String,
+    default: '#333'
+  },
+  welcomeTextColor: {
+    type: String,
+    default: '#fff'
+  },
+  welcomeButtonColor: {
+    type: String,
+    default: '#007bff'
+  },
+  welcomeButtonHoverColor: {
+    type: String,
+    default: '#0056b3'
+  }
 });
 
 const chatButtonRef = ref(null);
@@ -116,17 +132,23 @@ onMounted(() => {
 <template>
   <div class="chat-container">
     <transition name="typing-fade">
-      <div v-if="showTypingIndicator" class="typing-indicator">
-        <span></span>
-        <span></span>
-        <span></span>
+      <div v-if="showTypingIndicator" class="typing-indicator" :style="{
+        backgroundColor: welcomeBackgroundColor,
+        color: welcomeTextColor
+      }">
+        <span :style="{ backgroundColor: welcomeTextColor }"></span>
+        <span :style="{ backgroundColor: welcomeTextColor }"></span>
+        <span :style="{ backgroundColor: welcomeTextColor }"></span>
       </div>
     </transition>
 
     <transition name="greet-modal-fade">
-      <div v-if="showGreetingModal" class="greeting-modal">
+      <div v-if="showGreetingModal" class="greeting-modal" :style="{
+        backgroundColor: welcomeBackgroundColor,
+        color: welcomeTextColor
+      }">
         <div class="closeModal">
-          <button @click="dismissGreeting">✕</button>
+          <button @click="dismissGreeting" :style="{ color: welcomeTextColor }">✕</button>
         </div>
         <div @click="clicStartChat" style="cursor: pointer;">
           <SvgComponent type="helloSpan" />
@@ -136,7 +158,12 @@ onMounted(() => {
               "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
             }}
           </p>
-          <button @click="clicStartChat" class="greeting-ok-button">
+          <button @click="clicStartChat" class="greeting-ok-button" :style="{
+            backgroundColor: welcomeButtonColor,
+            '&:hover': {
+              backgroundColor: welcomeButtonHoverColor
+            }
+          }">
             ¡Chatear ahora!
           </button>
         </div>
@@ -193,7 +220,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  background-color: #333;
   border-radius: 15px 15px 15px 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -203,7 +229,6 @@ onMounted(() => {
   height: 8px;
   width: 8px;
   margin: 0 2px;
-  background-color: #aeaeae;
   border-radius: 50%;
   opacity: 0.4;
   animation: typing-dots 1.2s infinite ease-in-out;
@@ -246,8 +271,6 @@ onMounted(() => {
   position: absolute;
   bottom: 85px;
   left: 5px;
-  background-color: #333;
-  color: white;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -280,7 +303,6 @@ onMounted(() => {
 }
 
 .greeting-ok-button {
-  background-color: #007bff;
   color: white;
   border: none;
   padding: 5px 15px;
@@ -291,19 +313,6 @@ onMounted(() => {
   margin-top: 5px;
   transition: background-color 0.2s ease;
 }
-.greeting-ok-button:hover {
-  background-color: #0056b3;
-}
-
-.greet-modal-fade-enter-active,
-.greet-modal-fade-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.greet-modal-fade-enter-from,
-.greet-modal-fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
-}
 
 .closeModal {
   display: flex;
@@ -313,14 +322,13 @@ onMounted(() => {
   border-style: none;
   border-bottom-style: none;
   background-color: transparent;
-  color: white;
   font-size: 20px;
   padding: 0px;
   font-weight: bold;
   cursor: pointer;
 }
 .closeModal button:hover {
-  color: rgb(216, 143, 143);
+  opacity: 0.8;
 }
 
 .chat-button {

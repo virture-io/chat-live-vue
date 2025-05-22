@@ -19,5 +19,9 @@ import "vue-chat-widget";
   .api_key="'key'"
   .welcomeMessage="'welcome'"
   .iconButton="'url-picture'"
+  welcomeBackgroundColor="#333"
+  welcomeTextColor="#fff"
+  welcomeButtonColor="#007bff"
+  welcomeButtonHoverColor="#0056b3"
 ></vue-chat-widget>
 ```

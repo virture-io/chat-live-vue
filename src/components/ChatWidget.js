@@ -9,6 +9,10 @@ const ChatElement = defineCustomElement(Chat, {
     api_key: String,
     welcomeMessage: String,
     iconButton: String,
+    welcomeBackgroundColor: String,
+    welcomeTextColor: String,
+    welcomeButtonColor: String,
+    welcomeButtonHoverColor: String,
   },
 });
 
