@@ -128,16 +128,18 @@ onMounted(() => {
         <div class="closeModal">
           <button @click="dismissGreeting">✕</button>
         </div>
-        <SvgComponent type="helloSpan" />
-        <p>
-          {{
-            props.welcomeMessage ??
-            "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
-          }}
-        </p>
-        <button @click="clicStartChat" class="greeting-ok-button">
-          ¡Chatear ahora!
-        </button>
+        <div @click="clicStartChat" style="cursor: pointer;">
+          <SvgComponent type="helloSpan" />
+          <p>
+            {{
+              props.welcomeMessage ??
+              "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
+            }}
+          </p>
+          <button @click="clicStartChat" class="greeting-ok-button">
+            ¡Chatear ahora!
+          </button>
+        </div>
       </div>
     </transition>
 
