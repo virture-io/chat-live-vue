@@ -265,8 +265,10 @@ onMounted(async () => {
           <SvgComponent type="helloSpan" />
           <p>
             {{
-              props.welcomeMessage ??
-              "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
+              custom_style.welcomeMessage
+                ? custom_style.welcomeMessage
+                : props.welcomeMessage ??
+                  "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
             }}
           </p>
           <button
@@ -309,17 +311,21 @@ onMounted(async () => {
     >
       <template v-if="!openChat">
         <img
-          v-if="props.iconButton"
-          :src="props.iconButton"
+          v-if="props.iconButton || custom_style.icon_button_url"
+          :src="
+            custom_style.icon_button_url
+              ? custom_style.icon_button_url
+              : props.iconButton
+          "
           alt="Chat logo"
           class="chat-button-icon chat-button-image"
         />
 
-        <SvgComponent
+        <!-- <SvgComponent
           v-else
           type="iconBtn"
           class="chat-button-icon chat-button-svg"
-        />
+        /> -->
       </template>
 
       <span
