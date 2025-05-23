@@ -90,7 +90,7 @@ watch(messages, scrollToBottom, { deep: true });
   width: 100%;
   box-sizing: border-box;
   padding: 5px;
-  background-color: white;
+  background-color: transparent;
 }
 
 .message:hover {

@@ -28,78 +28,78 @@ const props = defineProps({
   },
   welcomeBackgroundColor: {
     type: String,
-    default: '#333'
+    default: "#333",
   },
   welcomeTextColor: {
     type: String,
-    default: '#fff'
+    default: "#fff",
   },
   welcomeButtonColor: {
     type: String,
-    default: '#007bff'
+    default: "#007bff",
   },
   welcomeButtonHoverColor: {
     type: String,
-    default: '#0056b3'
+    default: "#0056b3",
   },
   chatPanelBackground: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatHeaderBackground: {
     type: String,
-    default: '#131844'
+    default: "#131844",
   },
   chatHeaderTextColor: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatMessagesBackground: {
     type: String,
-    default: '#f8f9fc'
+    default: "#f8f9fc",
   },
   chatInputBackground: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatInputTextColor: {
     type: String,
-    default: '#474747'
+    default: "#474747",
   },
   chatInputBorderColor: {
     type: String,
-    default: '#ccc'
+    default: "#ccc",
   },
   sendButtonBackground: {
     type: String,
-    default: '#131844'
+    default: "#131844",
   },
   sendButtonHoverBackground: {
     type: String,
-    default: '#1a205a'
+    default: "#1a205a",
   },
   userMessageBackground: {
     type: String,
-    default: '#15be86'
+    default: "#15be86",
   },
   userMessageTextColor: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   botMessageBackground: {
     type: String,
-    default: '#f5f5f5'
+    default: "#f5f5f5",
   },
   botMessageTextColor: {
     type: String,
-    default: '#3f3f3f'
-  }
+    default: "#3f3f3f",
+  },
 });
 
 const chatButtonRef = ref(null);
 const showGreetingModal = ref(false);
 const showTypingIndicator = ref(false);
-const { openChat, setValueOpenChat } = useChatMessages();
+const { openChat, setValueOpenChat, custom_style } = useChatMessages();
 //const isChatOpen = ref(openChat.value);
 
 const toggleChat = () => {
@@ -177,32 +177,60 @@ onMounted(() => {
   }
 
   // Establecer conexión del socket
-  socketConnection(props.socketUrl, props.idAgent, props.api_key);
+  socketConnection("http://localhost:7777", "65d7a475abc4c71e14dee693", "api");
 });
 </script>
 
 <template>
   <div class="chat-container">
     <transition name="typing-fade">
-      <div v-if="showTypingIndicator" class="typing-indicator" :style="{
-        backgroundColor: welcomeBackgroundColor,
-        color: welcomeTextColor
-      }">
-        <span :style="{ backgroundColor: welcomeTextColor }"></span>
-        <span :style="{ backgroundColor: welcomeTextColor }"></span>
-        <span :style="{ backgroundColor: welcomeTextColor }"></span>
+      <div
+        v-if="showTypingIndicator"
+        class="typing-indicator"
+        :style="{
+          backgroundColor: custom_style.welcomeBackgroundColor 
+            ? custom_style.welcomeBackgroundColor 
+            : welcomeBackgroundColor,
+          color: custom_style.welcomeTextColor 
+            ? custom_style.welcomeTextColor 
+            : welcomeTextColor,
+        }"
+      >
+        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
+          ? custom_style.welcomeTextColor 
+          : welcomeTextColor }"></span>
+        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
+          ? custom_style.welcomeTextColor 
+          : welcomeTextColor }"></span>
+        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
+          ? custom_style.welcomeTextColor 
+          : welcomeTextColor }"></span>
       </div>
     </transition>
 
     <transition name="greet-modal-fade">
-      <div v-if="showGreetingModal" class="greeting-modal" :style="{
-        backgroundColor: welcomeBackgroundColor,
-        color: welcomeTextColor
-      }">
+      <div
+        v-if="showGreetingModal"
+        class="greeting-modal"
+        :style="{
+          backgroundColor: custom_style.welcomeBackgroundColor 
+            ? custom_style.welcomeBackgroundColor 
+            : welcomeBackgroundColor,
+          color: custom_style.welcomeTextColor 
+            ? custom_style.welcomeTextColor 
+            : welcomeTextColor,
+        }"
+      >
         <div class="closeModal">
-          <button @click="dismissGreeting" :style="{ color: welcomeTextColor }">✕</button>
+          <button @click="dismissGreeting" :style="{ 
+            color: custom_style.welcomeTextColor 
+              ? custom_style.welcomeTextColor 
+              : welcomeTextColor 
+          }">
+            ✕
+          </button>
         </div>
-        <div @click="clicStartChat" style="cursor: pointer;">
+        <div @click="clicStartChat" style="cursor: pointer">
           <SvgComponent type="helloSpan" />
           <p>
             {{
@@ -210,12 +238,20 @@ onMounted(() => {
               "¡Hola! Bienvenido. Si necesitas ayuda con tu búsqueda o tienes alguna consulta, no dudes en iniciar un chat. ¡Estamos aquí para asistirte!"
             }}
           </p>
-          <button @click="clicStartChat" class="greeting-ok-button" :style="{
-            backgroundColor: welcomeButtonColor,
-            '&:hover': {
-              backgroundColor: welcomeButtonHoverColor
-            }
-          }">
+          <button
+            @click="clicStartChat"
+            class="greeting-ok-button"
+            :style="{
+              backgroundColor: custom_style.welcomeButtonColor 
+                ? custom_style.welcomeButtonColor 
+                : welcomeButtonColor,
+              '&:hover': {
+                backgroundColor: custom_style.welcomeButtonHoverColor 
+                  ? custom_style.welcomeButtonHoverColor 
+                  : welcomeButtonHoverColor,
+              },
+            }"
+          >
             ¡Chatear ahora!
           </button>
         </div>
@@ -227,10 +263,18 @@ onMounted(() => {
       class="chat-button"
       @click="toggleChat"
       :class="{ active: openChat }"
-      :style="openChat ? {
-        backgroundColor: chatHeaderBackground,
-        color: chatHeaderTextColor
-      } : {}"
+      :style="
+        openChat
+          ? {
+              backgroundColor: custom_style.chatHeaderBackground
+                ? custom_style.chatHeaderBackground
+                : chatHeaderBackground,
+              color: custom_style.chatHeaderTextColor
+                ? custom_style.chatHeaderTextColor
+                : chatHeaderTextColor,
+            }
+          : {}
+      "
     >
       <template v-if="!openChat">
         <img
@@ -247,28 +291,35 @@ onMounted(() => {
         />
       </template>
 
-      <span v-else class="chat-button-close-icon" :style="{
-        color: chatHeaderTextColor
-      }">✕</span>
+      <span
+        v-else
+        class="chat-button-close-icon"
+        :style="{
+          color: custom_style.chatHeaderTextColor
+            ? custom_style.chatHeaderTextColor
+            : chatHeaderTextColor,
+        }"
+        >✕</span
+      >
     </button>
 
     <div v-if="openChat" class="form-container">
       <FormComponent 
         :idAgent="props.idAgent" 
         :api_key="props.api_key"
-        :chatPanelBackground="chatPanelBackground"
-        :chatHeaderBackground="chatHeaderBackground"
-        :chatHeaderTextColor="chatHeaderTextColor"
-        :chatMessagesBackground="chatMessagesBackground"
-        :chatInputBackground="chatInputBackground"
-        :chatInputTextColor="chatInputTextColor"
-        :chatInputBorderColor="chatInputBorderColor"
-        :sendButtonBackground="sendButtonBackground"
-        :sendButtonHoverBackground="sendButtonHoverBackground"
-        :userMessageBackground="userMessageBackground"
-        :userMessageTextColor="userMessageTextColor"
-        :botMessageBackground="botMessageBackground"
-        :botMessageTextColor="botMessageTextColor"
+        :chatPanelBackground="custom_style.chatPanelBackground || chatPanelBackground"
+        :chatHeaderBackground="custom_style.chatHeaderBackground || chatHeaderBackground"
+        :chatHeaderTextColor="custom_style.chatHeaderTextColor || chatHeaderTextColor"
+        :chatMessagesBackground="custom_style.chatMessagesBackground || chatMessagesBackground"
+        :chatInputBackground="custom_style.chatInputBackground || chatInputBackground"
+        :chatInputTextColor="custom_style.chatInputTextColor || chatInputTextColor"
+        :chatInputBorderColor="custom_style.chatInputBorderColor || chatInputBorderColor"
+        :sendButtonBackground="custom_style.sendButtonBackground || sendButtonBackground"
+        :sendButtonHoverBackground="custom_style.sendButtonHoverBackground || sendButtonHoverBackground"
+        :userMessageBackground="custom_style.userMessageBackground || userMessageBackground"
+        :userMessageTextColor="custom_style.userMessageTextColor || userMessageTextColor"
+        :botMessageBackground="custom_style.botMessageBackground || botMessageBackground"
+        :botMessageTextColor="custom_style.botMessageTextColor || botMessageTextColor"
       />
     </div>
   </div>

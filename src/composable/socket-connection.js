@@ -9,7 +9,8 @@ let manager = null;
 export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   if (socket) return socket;
 
-  const { setValueMessages, addMessage } = useChatMessages();
+  const { setValueMessages, addMessage, setCustomStyle, custom_style } =
+    useChatMessages();
   let currentUrl = window.location.href;
   get_utm(currentUrl);
 
@@ -65,6 +66,17 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
     }
   }, 2000);
 
+  //get config custo widget
+  let style;
+  setInterval(() => {
+    socket.emit("get-custom-widget", idAgent, (val) => {
+      style = val;
+      if (!haveSameValues(style,custom_style.value)) {
+        setCustomStyle({ ...style });
+      }
+    });
+  }, 1000);
+
   socket.on("disconnect", () => {});
 
   socket.on("response", (val) => {
@@ -73,5 +85,22 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
 
   return socket;
 };
+
+function haveSameValues(obj1, obj2) {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    if (obj1[key] !== obj2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 export const useSocket = () => socket;
