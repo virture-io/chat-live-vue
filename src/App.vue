@@ -126,27 +126,29 @@ const clicStartChat = () => {
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
 };
 
-onMounted(() => {
-  let typingTimer = null;
-  let modalTimer = null;
-  let autoDismissTimer = null;
-  let unwatchChatOpen = null;
+let typingTimer = null;
+let modalTimer = null;
+let autoDismissTimer = null;
+let unwatchChatOpen = null;
 
+const cleanupEffects = () => {
+  clearTimeout(typingTimer);
+  clearTimeout(modalTimer);
+  clearTimeout(autoDismissTimer);
   if (chatButtonRef.value) {
-    const cleanupEffects = () => {
-      clearTimeout(typingTimer);
-      clearTimeout(modalTimer);
-      clearTimeout(autoDismissTimer);
-      if (chatButtonRef.value) {
-        chatButtonRef.value.classList.remove("chat-button-greet-animation");
-      }
-      showTypingIndicator.value = false;
-      showGreetingModal.value = false;
-      if (unwatchChatOpen) {
-        unwatchChatOpen();
-      }
-    };
+    chatButtonRef.value.classList.remove("chat-button-greet-animation");
+  }
+  showTypingIndicator.value = false;
+  showGreetingModal.value = false;
+  if (unwatchChatOpen) {
+    unwatchChatOpen();
+  }
+};
 
+const setupTimers = () => {
+  cleanupEffects();
+
+  if (chatButtonRef.value && custom_style.value.visibility_welcome_modal) {
     typingTimer = setTimeout(() => {
       if (!openChat.value && !showGreetingModal.value) {
         showTypingIndicator.value = true;
@@ -157,7 +159,6 @@ onMounted(() => {
       if (!openChat.value) {
         showTypingIndicator.value = false;
         showGreetingModal.value = true;
-
         chatButtonRef.value?.classList.add("chat-button-greet-animation");
       }
     }, 3500);
@@ -167,17 +168,32 @@ onMounted(() => {
         dismissGreeting();
       }
       chatButtonRef.value?.classList.remove("chat-button-greet-animation");
-    }, 15000);
-
-    unwatchChatOpen = watch(openChat, (newValue) => {
-      if (newValue) {
-        cleanupEffects();
-      }
-    });
+    }, custom_style.value?.time_active_welcome_modal || 15000);
   }
+};
 
+// Observar cambios en custom_style
+watch(
+  custom_style,
+  (newValue) => {
+    if (newValue && !openChat.value) {
+      setupTimers();
+    }
+  },
+  { deep: true }
+);
+
+onMounted(async () => {
   // Establecer conexión del socket
-  socketConnection("http://localhost:7777", "65d7a475abc4c71e14dee693", "api");
+  await socketConnection(props.socketUrl, props.idAgent, props.api_key);
+
+  setupTimers();
+
+  unwatchChatOpen = watch(openChat, (newValue) => {
+    if (newValue) {
+      cleanupEffects();
+    }
+  });
 });
 </script>
 
@@ -188,23 +204,35 @@ onMounted(() => {
         v-if="showTypingIndicator"
         class="typing-indicator"
         :style="{
-          backgroundColor: custom_style.welcomeBackgroundColor 
-            ? custom_style.welcomeBackgroundColor 
+          backgroundColor: custom_style.welcomeBackgroundColor
+            ? custom_style.welcomeBackgroundColor
             : welcomeBackgroundColor,
-          color: custom_style.welcomeTextColor 
-            ? custom_style.welcomeTextColor 
+          color: custom_style.welcomeTextColor
+            ? custom_style.welcomeTextColor
             : welcomeTextColor,
         }"
       >
-        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
-          ? custom_style.welcomeTextColor 
-          : welcomeTextColor }"></span>
-        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
-          ? custom_style.welcomeTextColor 
-          : welcomeTextColor }"></span>
-        <span :style="{ backgroundColor: custom_style.welcomeTextColor 
-          ? custom_style.welcomeTextColor 
-          : welcomeTextColor }"></span>
+        <span
+          :style="{
+            backgroundColor: custom_style.welcomeTextColor
+              ? custom_style.welcomeTextColor
+              : welcomeTextColor,
+          }"
+        ></span>
+        <span
+          :style="{
+            backgroundColor: custom_style.welcomeTextColor
+              ? custom_style.welcomeTextColor
+              : welcomeTextColor,
+          }"
+        ></span>
+        <span
+          :style="{
+            backgroundColor: custom_style.welcomeTextColor
+              ? custom_style.welcomeTextColor
+              : welcomeTextColor,
+          }"
+        ></span>
       </div>
     </transition>
 
@@ -213,20 +241,23 @@ onMounted(() => {
         v-if="showGreetingModal"
         class="greeting-modal"
         :style="{
-          backgroundColor: custom_style.welcomeBackgroundColor 
-            ? custom_style.welcomeBackgroundColor 
+          backgroundColor: custom_style.welcomeBackgroundColor
+            ? custom_style.welcomeBackgroundColor
             : welcomeBackgroundColor,
-          color: custom_style.welcomeTextColor 
-            ? custom_style.welcomeTextColor 
+          color: custom_style.welcomeTextColor
+            ? custom_style.welcomeTextColor
             : welcomeTextColor,
         }"
       >
-        <div class="closeModal">
-          <button @click="dismissGreeting" :style="{ 
-            color: custom_style.welcomeTextColor 
-              ? custom_style.welcomeTextColor 
-              : welcomeTextColor 
-          }">
+        <div class="closeModal" v-if="custom_style.btn_close_welcome_modal">
+          <button
+            @click="dismissGreeting"
+            :style="{
+              color: custom_style.welcomeTextColor
+                ? custom_style.welcomeTextColor
+                : welcomeTextColor,
+            }"
+          >
             ✕
           </button>
         </div>
@@ -242,12 +273,12 @@ onMounted(() => {
             @click="clicStartChat"
             class="greeting-ok-button"
             :style="{
-              backgroundColor: custom_style.welcomeButtonColor 
-                ? custom_style.welcomeButtonColor 
+              backgroundColor: custom_style.welcomeButtonColor
+                ? custom_style.welcomeButtonColor
                 : welcomeButtonColor,
               '&:hover': {
-                backgroundColor: custom_style.welcomeButtonHoverColor 
-                  ? custom_style.welcomeButtonHoverColor 
+                backgroundColor: custom_style.welcomeButtonHoverColor
+                  ? custom_style.welcomeButtonHoverColor
                   : welcomeButtonHoverColor,
               },
             }"
@@ -304,22 +335,48 @@ onMounted(() => {
     </button>
 
     <div v-if="openChat" class="form-container">
-      <FormComponent 
-        :idAgent="props.idAgent" 
+      <FormComponent
+        :idAgent="props.idAgent"
         :api_key="props.api_key"
-        :chatPanelBackground="custom_style.chatPanelBackground || chatPanelBackground"
-        :chatHeaderBackground="custom_style.chatHeaderBackground || chatHeaderBackground"
-        :chatHeaderTextColor="custom_style.chatHeaderTextColor || chatHeaderTextColor"
-        :chatMessagesBackground="custom_style.chatMessagesBackground || chatMessagesBackground"
-        :chatInputBackground="custom_style.chatInputBackground || chatInputBackground"
-        :chatInputTextColor="custom_style.chatInputTextColor || chatInputTextColor"
-        :chatInputBorderColor="custom_style.chatInputBorderColor || chatInputBorderColor"
-        :sendButtonBackground="custom_style.sendButtonBackground || sendButtonBackground"
-        :sendButtonHoverBackground="custom_style.sendButtonHoverBackground || sendButtonHoverBackground"
-        :userMessageBackground="custom_style.userMessageBackground || userMessageBackground"
-        :userMessageTextColor="custom_style.userMessageTextColor || userMessageTextColor"
-        :botMessageBackground="custom_style.botMessageBackground || botMessageBackground"
-        :botMessageTextColor="custom_style.botMessageTextColor || botMessageTextColor"
+        :chatPanelBackground="
+          custom_style.chatPanelBackground || chatPanelBackground
+        "
+        :chatHeaderBackground="
+          custom_style.chatHeaderBackground || chatHeaderBackground
+        "
+        :chatHeaderTextColor="
+          custom_style.chatHeaderTextColor || chatHeaderTextColor
+        "
+        :chatMessagesBackground="
+          custom_style.chatMessagesBackground || chatMessagesBackground
+        "
+        :chatInputBackground="
+          custom_style.chatInputBackground || chatInputBackground
+        "
+        :chatInputTextColor="
+          custom_style.chatInputTextColor || chatInputTextColor
+        "
+        :chatInputBorderColor="
+          custom_style.chatInputBorderColor || chatInputBorderColor
+        "
+        :sendButtonBackground="
+          custom_style.sendButtonBackground || sendButtonBackground
+        "
+        :sendButtonHoverBackground="
+          custom_style.sendButtonHoverBackground || sendButtonHoverBackground
+        "
+        :userMessageBackground="
+          custom_style.userMessageBackground || userMessageBackground
+        "
+        :userMessageTextColor="
+          custom_style.userMessageTextColor || userMessageTextColor
+        "
+        :botMessageBackground="
+          custom_style.botMessageBackground || botMessageBackground
+        "
+        :botMessageTextColor="
+          custom_style.botMessageTextColor || botMessageTextColor
+        "
       />
     </div>
   </div>
