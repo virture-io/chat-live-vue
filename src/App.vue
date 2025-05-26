@@ -168,7 +168,7 @@ const setupTimers = () => {
         dismissGreeting();
       }
       chatButtonRef.value?.classList.remove("chat-button-greet-animation");
-    }, custom_style.value?.time_active_welcome_modal || 15000);
+    }, custom_style.value?.time_active_welcome_modal * 1000 + 4500 || 15000);
   }
 };
 
