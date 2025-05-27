@@ -52,6 +52,7 @@ import SvgComponent from "./SvgComponent.vue";
 import ChatBubbleComponent from "./ChatBubbleComponent.vue";
 import { useChatMessages } from "../composable/useMessages";
 import { useSocket } from "../composable/socket-connection";
+import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
 
 const props = defineProps({
   idAgent: {
@@ -142,6 +143,15 @@ const sendMessage = () => {
       },
       (val) => {}
     );
+
+    // Track message sent event
+    pushToDataLayer({
+      event: CHAT_EVENTS.MESSAGE_SENT,
+      chat_session_id: id,
+      chat_message_length: message.value.trim().length,
+      chat_message_type: 'text'
+    });
+
     message.value = "";
   }
 };

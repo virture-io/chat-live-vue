@@ -2,6 +2,7 @@ import { Manager } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
 import { get_utm } from "./get_utm";
+import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
 
 let socket = null;
 let manager = null;
@@ -19,6 +20,13 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   if (!userUUID) {
     userUUID = uuidv4();
     localStorage.setItem("userUUID", userUUID);
+    
+    // Track new session creation
+    pushToDataLayer({
+      event: CHAT_EVENTS.SESSION_STARTED,
+      chat_session_id: userUUID,
+      chat_source: 'user_initiated'
+    });
   }
 
   // Obtener el ID del chat si existe

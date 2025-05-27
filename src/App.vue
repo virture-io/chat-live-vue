@@ -4,6 +4,7 @@ import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
 import { socketConnection } from "./composable/socket-connection";
 import { useChatMessages } from "./composable/useMessages";
+import { pushToDataLayer, CHAT_EVENTS } from "./utils/dataLayer";
 
 const props = defineProps({
   socketUrl: {
@@ -112,6 +113,19 @@ const toggleChat = () => {
   //isChatOpen.value = !isChatOpen.value;
   setValueOpenChat(!openChat.value);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
+
+  // Track widget open/close event
+  if (!openChat.value) {
+    pushToDataLayer({
+      event: CHAT_EVENTS.WIDGET_OPENED,
+      chat_is_expanded: true
+    });
+  } else {
+    pushToDataLayer({
+      event: CHAT_EVENTS.WIDGET_CLOSED,
+      chat_is_expanded: false
+    });
+  }
 };
 
 const dismissGreeting = () => {
@@ -121,7 +135,6 @@ const dismissGreeting = () => {
 
 const clicStartChat = () => {
   showGreetingModal.value = false;
-  //isChatOpen.value = true;
   setValueOpenChat(true);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
 };
