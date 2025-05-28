@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
 import { get_utm } from "./get_utm";
 import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
+import { useSessionMetrics } from "./useSessionMetrics";
+import { areObjectsDeepEqual } from "./compare-objects";
 
+const { sessionInfo } = useSessionMetrics();
 let socket = null;
 let manager = null;
 
@@ -20,12 +23,12 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   if (!userUUID) {
     userUUID = uuidv4();
     localStorage.setItem("userUUID", userUUID);
-    
+
     // Track new session creation
     pushToDataLayer({
       event: CHAT_EVENTS.SESSION_STARTED,
       chat_session_id: userUUID,
-      chat_source: 'user_initiated'
+      chat_source: "user_initiated",
     });
   }
 
@@ -79,11 +82,21 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
   setInterval(() => {
     socket.emit("get-custom-widget", idAgent, (val) => {
       style = val;
-      if (!haveSameValues(style,custom_style.value)) {
+      if (!haveSameValues(style, custom_style.value)) {
         setCustomStyle({ ...style });
       }
     });
   }, 1000);
+
+  let val;
+  setInterval(() => {
+    if (
+      !areObjectsDeepEqual(val, { idClient: idThread, ...sessionInfo.value })
+    ) {
+      socket.emit("metrics-chat", { idClient: idThread, ...sessionInfo.value });
+      val = { idClient: idThread, ...sessionInfo.value };
+    }
+  }, 10000);
 
   socket.on("disconnect", () => {});
 

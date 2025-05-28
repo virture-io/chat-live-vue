@@ -118,12 +118,12 @@ const toggleChat = () => {
   if (!openChat.value) {
     pushToDataLayer({
       event: CHAT_EVENTS.WIDGET_OPENED,
-      chat_is_expanded: true
+      chat_is_expanded: true,
     });
   } else {
     pushToDataLayer({
       event: CHAT_EVENTS.WIDGET_CLOSED,
-      chat_is_expanded: false
+      chat_is_expanded: false,
     });
   }
 };
@@ -198,7 +198,11 @@ watch(
 
 onMounted(async () => {
   // Establecer conexión del socket
-  await socketConnection(props.socketUrl, props.idAgent, props.api_key);
+  await socketConnection(
+    "http://localhost:7777",
+    "65d7a475abc4c71e14dee693",
+    props.api_key
+  );
 
   setupTimers();
 
