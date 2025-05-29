@@ -19,6 +19,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  nameSpace: {
+    type: String,
+    required: true,
+  },
   welcomeMessage: {
     type: String,
     required: true,
@@ -199,9 +203,10 @@ watch(
 onMounted(async () => {
   // Establecer conexión del socket
   await socketConnection(
-    "http://localhost:7777",
-    "65d7a475abc4c71e14dee693",
-    props.api_key
+    props.socketUrl,
+    props.idAgent,
+    props.api_key,
+    props.nameSpace
   );
 
   setupTimers();

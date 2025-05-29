@@ -7,6 +7,7 @@ const ChatElement = defineCustomElement(Chat, {
     socketUrl: String,
     idAgent: String,
     api_key: String,
+    nameSpace: String,
     welcomeMessage: String,
     iconButton: String,
     // Welcome message colors
@@ -28,7 +29,7 @@ const ChatElement = defineCustomElement(Chat, {
     userMessageBackground: String,
     userMessageTextColor: String,
     botMessageBackground: String,
-    botMessageTextColor: String
+    botMessageTextColor: String,
   },
 });
 

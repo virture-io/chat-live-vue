@@ -10,7 +10,12 @@ const { sessionInfo } = useSessionMetrics();
 let socket = null;
 let manager = null;
 
-export const socketConnection = (socketUrl, idAgent, api_key = "") => {
+export const socketConnection = (
+  socketUrl,
+  idAgent,
+  api_key = "",
+  nameSpace = "chat"
+) => {
   if (socket) return socket;
 
   const { setValueMessages, addMessage, setCustomStyle, custom_style } =
@@ -40,10 +45,10 @@ export const socketConnection = (socketUrl, idAgent, api_key = "") => {
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
-    query: { idOwner: userUUID, api_key: api_key },
+    query: { idOwner: userUUID, api_key: api_key, idClient: userUUID },
   });
 
-  socket = manager.socket("/chat");
+  socket = manager.socket(`/${nameSpace}`);
 
   socket.on("connect", () => {
     socket.emit(
