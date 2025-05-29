@@ -17,6 +17,7 @@ import "vue-chat-widget";
   .socketUrl="'url'"
   .idAgent="'id'"
   .api_key="'key'"
+  nameSpace="/"
   .welcomeMessage="'welcome'"
   .iconButton="'url-picture'"
   welcomeBackgroundColor="#333"

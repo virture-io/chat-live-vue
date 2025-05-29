@@ -14,7 +14,7 @@ export const socketConnection = (
   socketUrl,
   idAgent,
   api_key = "",
-  nameSpace = "chat"
+  nameSpace
 ) => {
   if (socket) return socket;
 
@@ -45,10 +45,15 @@ export const socketConnection = (
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
-    query: { idOwner: userUUID, api_key: api_key, idClient: userUUID },
+    query: {
+      idOwner: userUUID,
+      api_key: api_key,
+      idClient: userUUID,
+      instance: idAgent,
+    },
   });
 
-  socket = manager.socket(`/${nameSpace}`);
+  socket = manager.socket(nameSpace);
 
   socket.on("connect", () => {
     socket.emit(
