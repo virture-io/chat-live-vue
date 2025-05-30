@@ -47,6 +47,10 @@ const props = defineProps({
     type: String,
     default: "#0056b3",
   },
+  welcomeMessageButton: {
+    type: String,
+    default: "start chat",
+  },
   chatPanelBackground: {
     type: String,
     default: "#ffffff",
@@ -307,7 +311,11 @@ onMounted(async () => {
               },
             }"
           >
-            ¡Chatear ahora!
+            {{
+              custom_style.welcomeMessageButton
+                ? custom_style.welcomeMessageButton
+                : props.welcomeMessageButton ?? "¡Chatear Ahora!"
+            }}
           </button>
         </div>
       </div>

@@ -1,15 +1,28 @@
 <template>
   <Transition name="slide-fade">
-    <div v-if="isVisible" class="chat-panel" :style="{ backgroundColor: chatPanelBackground }">
-      <div class="chat-header" :style="{ backgroundColor: chatHeaderBackground, color: chatHeaderTextColor }">
+    <div
+      v-if="isVisible"
+      class="chat-panel"
+      :style="{ backgroundColor: chatPanelBackground }"
+    >
+      <div
+        class="chat-header"
+        :style="{
+          backgroundColor: chatHeaderBackground,
+          color: chatHeaderTextColor,
+        }"
+      >
         <div class="sub-head">
           <span>Hola!</span>
           <SvgComponent :type="'hello'" />
         </div>
         <span>Inicia un chat, estamos aquí para ayudarte.</span>
       </div>
-      <div class="chat-messages" :style="{ backgroundColor: chatMessagesBackground }">
-        <ChatBubbleComponent 
+      <div
+        class="chat-messages"
+        :style="{ backgroundColor: chatMessagesBackground }"
+      >
+        <ChatBubbleComponent
           :userMessageBackground="userMessageBackground"
           :userMessageTextColor="userMessageTextColor"
           :botMessageBackground="botMessageBackground"
@@ -26,17 +39,17 @@
           :style="{
             backgroundColor: chatInputBackground,
             color: chatInputTextColor,
-            borderColor: chatInputBorderColor
+            borderColor: chatInputBorderColor,
           }"
         ></textarea>
-        <button 
-          class="send-button" 
+        <button
+          class="send-button"
           @click="sendMessage"
           :style="{
             backgroundColor: sendButtonBackground,
             '&:hover': {
-              backgroundColor: sendButtonHoverBackground
-            }
+              backgroundColor: sendButtonHoverBackground,
+            },
           }"
         >
           <SvgComponent type="sendBtn" />
@@ -65,56 +78,56 @@ const props = defineProps({
   },
   chatPanelBackground: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatHeaderBackground: {
     type: String,
-    default: '#131844'
+    default: "#131844",
   },
   chatHeaderTextColor: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatMessagesBackground: {
     type: String,
-    default: '#f8f9fc'
+    default: "#f8f9fc",
   },
   chatInputBackground: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   chatInputTextColor: {
     type: String,
-    default: '#474747'
+    default: "#474747",
   },
   chatInputBorderColor: {
     type: String,
-    default: '#ccc'
+    default: "#ccc",
   },
   sendButtonBackground: {
     type: String,
-    default: '#131844'
+    default: "#131844",
   },
   sendButtonHoverBackground: {
     type: String,
-    default: '#1a205a'
+    default: "#1a205a",
   },
   userMessageBackground: {
     type: String,
-    default: '#15be86'
+    default: "#15be86",
   },
   userMessageTextColor: {
     type: String,
-    default: '#ffffff'
+    default: "#ffffff",
   },
   botMessageBackground: {
     type: String,
-    default: '#f5f5f5'
+    default: "#f5f5f5",
   },
   botMessageTextColor: {
     type: String,
-    default: '#3f3f3f'
-  }
+    default: "#3f3f3f",
+  },
 });
 
 const textareaRef = ref(null);
@@ -138,8 +151,22 @@ const sendMessage = () => {
         message: message.value.trim(),
         agentId: props.idAgent,
         api_key: props.api_key,
-        utm_source: localStorage.getItem("utm_source"),
-        utm_medium: localStorage.getItem("utm_medium"),
+        utms: {
+          utm_source: localStorage.getItem("utm_source"),
+          utm_medium: localStorage.getItem("utm_medium"),
+          campaign: localStorage.getItem("campaign"),
+          utm_term: localStorage.getItem("utm_term"),
+          utm_content: localStorage.getItem("utm_content"),
+          gclid: localStorage.getItem("gclid"),
+          wbraid: localStorage.getItem("wbraid"),
+          gbraid: localStorage.getItem("gbraid"),
+          crm_link: localStorage.getItem("crm_link"),
+          adSet: localStorage.getItem("adSet"),
+          ad: localStorage.getItem("ad"),
+          form: localStorage.getItem("form"),
+          gad_campaignid: localStorage.getItem("gad_campaignid"),
+          gad_source: localStorage.getItem("gad_source"),
+        },
       },
       (val) => {}
     );
@@ -149,7 +176,7 @@ const sendMessage = () => {
       event: CHAT_EVENTS.MESSAGE_SENT,
       chat_session_id: id,
       chat_message_length: message.value.trim().length,
-      chat_message_type: 'text'
+      chat_message_type: "text",
     });
 
     message.value = "";

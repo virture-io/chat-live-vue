@@ -79,6 +79,22 @@ export const socketConnection = (
         time: now.toISOString(),
         clientId: idThread,
         instance: idAgent,
+        utms: {
+          utm_source: localStorage.getItem("utm_source"),
+          utm_medium: localStorage.getItem("utm_medium"),
+          campaign: localStorage.getItem("campaign"),
+          utm_term: localStorage.getItem("utm_term"),
+          utm_content: localStorage.getItem("utm_content"),
+          gclid: localStorage.getItem("gclid"),
+          wbraid: localStorage.getItem("wbraid"),
+          gbraid: localStorage.getItem("gbraid"),
+          crm_link: localStorage.getItem("crm_link"),
+          adSet: localStorage.getItem("adSet"),
+          ad: localStorage.getItem("ad"),
+          form: localStorage.getItem("form"),
+          gad_campaignid: localStorage.getItem("gad_campaignid"),
+          gad_source: localStorage.getItem("gad_source"),
+        },
       };
 
       socket.emit("navigation-path-chat", userNavigation);

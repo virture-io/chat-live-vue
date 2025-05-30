@@ -15,6 +15,7 @@ const ChatElement = defineCustomElement(Chat, {
     welcomeTextColor: String,
     welcomeButtonColor: String,
     welcomeButtonHoverColor: String,
+    welcomeMessageButton: String,
     // Chat panel colors
     chatPanelBackground: String,
     chatHeaderBackground: String,

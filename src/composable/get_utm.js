@@ -1,12 +1,26 @@
 export const get_utm = (url) => {
-  const source = localStorage.getItem("utm_source");
-  const medium = localStorage.getItem("utm_medium");
   const newUrl = new URL(url);
   const searchParams = newUrl.searchParams;
 
-  const utmSource = searchParams.get("utm_source");
-  const utmMedium = searchParams.get("utm_medium");
+  const paramsToCapture = [
+    "utm_source",
+    "utm_medium",
+    "campaign",
+    "utm_term",
+    "utm_content",
+    "gclid",
+    "wbraid",
+    "gbraid",
+    "crm_link",
+    "adSet",
+    "ad",
+    "form",
+    "gad_campaignid",
+    "gad_source",
+  ];
 
-  localStorage.setItem("utm_source", utmSource);
-  localStorage.setItem("utm_medium", utmMedium);
+  for (let index = 0; index < paramsToCapture.length; index++) {
+    const value = searchParams.get(paramsToCapture[index]) ?? null;
+    localStorage.setItem(paramsToCapture[index], value);
+  }
 };
