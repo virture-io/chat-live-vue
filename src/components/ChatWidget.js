@@ -34,6 +34,7 @@ const ChatElement = defineCustomElement(Chat, {
 
     //svg
     svgName: String,
+    soundName: String
   },
 });
 

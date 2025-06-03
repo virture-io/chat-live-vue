@@ -5,6 +5,7 @@ import { get_utm } from "./get_utm";
 import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
 import { useSessionMetrics } from "./useSessionMetrics";
 import { areObjectsDeepEqual } from "./compare-objects";
+import { useSound } from "./useSound";
 
 const { sessionInfo } = useSessionMetrics();
 let socket = null;
@@ -14,12 +15,14 @@ export const socketConnection = (
   socketUrl,
   idAgent,
   api_key = "",
-  nameSpace
+  nameSpace,
+  soundName = 'sound1'
 ) => {
   if (socket) return socket;
 
   const { setValueMessages, addMessage, setCustomStyle, custom_style } =
     useChatMessages();
+  const { playSound } = useSound();
   let currentUrl = window.location.href;
   get_utm(currentUrl);
 
@@ -128,6 +131,7 @@ export const socketConnection = (
 
   socket.on("response", (val) => {
     addMessage(val);
+    playSound(soundName);
   });
 
   return socket;

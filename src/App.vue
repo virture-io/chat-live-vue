@@ -107,6 +107,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  soundName: {
+    type: String,
+    default: 'sound1'
+  }
 });
 
 const chatButtonRef = ref(null);
@@ -214,7 +218,8 @@ onMounted(async () => {
     props.socketUrl,
     props.idAgent,
     props.api_key,
-    props.nameSpace
+    props.nameSpace,
+    props.soundName
   );
 
   setupTimers();

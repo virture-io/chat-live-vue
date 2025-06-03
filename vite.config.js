@@ -28,9 +28,16 @@ export default defineConfig({
         globals: {
           vue: "Vue",
         },
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith('.mp3')) {
+            return 'assets/sound/[name][extname]'
+          }
+          return assetInfo.name
+        }
       },
     },
   },
+  assetsInclude: ['**/*.mp3']
 });
 
 //Dev
