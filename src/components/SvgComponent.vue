@@ -357,7 +357,7 @@
       viewBox="0 0 512 512"
       xml:space="preserve"
       fill="#ffdd67"
-      class="animated-hand"
+      class="animated-hand-shake"
     >
       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
       <g
@@ -455,7 +455,7 @@ defineProps({
 
 
 /* handshake */
-.animated-hand {
+.animated-hand-shake {
   animation: bounce-hand 1s ease-in-out infinite alternate;
 }
 
