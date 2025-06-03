@@ -31,6 +31,9 @@ const ChatElement = defineCustomElement(Chat, {
     userMessageTextColor: String,
     botMessageBackground: String,
     botMessageTextColor: String,
+
+    //svg
+    svgName: String,
   },
 });
 

@@ -103,6 +103,10 @@ const props = defineProps({
     type: String,
     default: "#3f3f3f",
   },
+  svgName: {
+    type: String,
+    default: "",
+  },
 });
 
 const chatButtonRef = ref(null);
@@ -288,7 +292,11 @@ onMounted(async () => {
           </button>
         </div>
         <div @click="clicStartChat" style="cursor: pointer">
-          <SvgComponent type="helloSpan" />
+          <SvgComponent
+            :type="
+              custom_style.svgName ? custom_style.svgName : props.svgName ?? ''
+            "
+          />
           <p>
             {{
               custom_style.welcomeMessage

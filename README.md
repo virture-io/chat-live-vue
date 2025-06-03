@@ -37,5 +37,6 @@ import "vue-chat-widget";
   userMessageTextColor="#ffffff"
   botMessageBackground="#f5f5f5"
   botMessageTextColor="#3f3f3f"
+  svgName="helloSpan || headPhoneSpan || handshakeSpan || personHiSpan || ''"
 ></vue-chat-widget>
 ```

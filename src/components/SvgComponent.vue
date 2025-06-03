@@ -81,7 +81,7 @@
     </svg>
   </div>
 
-  <div v-if="type == 'restart'">
+  <div v-else-if="type == 'restart'">
     <svg
       height="25px"
       width="25px"
@@ -104,7 +104,7 @@
     </svg>
   </div>
 
-  <div v-if="type == 'iconBtn'">
+  <div v-else-if="type == 'iconBtn'">
     <svg
       height="70px"
       width="70px"
@@ -143,7 +143,7 @@
     </svg>
   </div>
 
-  <div v-if="type == 'sendBtn'">
+  <div v-else-if="type == 'sendBtn'">
     <svg
       height="25px"
       width="25px"
@@ -168,7 +168,7 @@
     </svg>
   </div>
 
-  <div v-if="type == 'helloSpan'">
+  <div v-else-if="type == 'helloSpan'">
     <svg
       width="70"
       height="70"
@@ -251,6 +251,154 @@
       </g>
     </svg>
   </div>
+
+  <div v-else-if="type == 'headPhoneSpan'">
+    <svg
+      width="70"
+      height="70"
+      viewBox="0 0 64 64"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <!-- Diadema -->
+      <path
+        d="M12 32a20 20 0 0 1 40 0"
+        fill="none"
+        stroke="#9d9a9e"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+
+      <!-- Audífono izquierdo -->
+      <rect
+        x="6"
+        y="32"
+        width="8"
+        height="20"
+        rx="3"
+        ry="3"
+        fill="#4A90E2"
+        stroke="#9d9a9e"
+        stroke-width="2"
+      />
+
+      <!-- Audífono derecho -->
+      <rect
+        x="50"
+        y="32"
+        width="8"
+        height="20"
+        rx="3"
+        ry="3"
+        fill="#4A90E2"
+        stroke="#9d9a9e"
+        stroke-width="2"
+      />
+
+      <!-- Conexiones internas -->
+      <path
+        d="M14 32v16M50 32v16"
+        stroke="#9d9a9e"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+
+      <!-- Micrófono vibrante -->
+      <g class="mic-path">
+        <path
+          d="M52 50c3 0 6 3 6 6s-3 6-6 6h-6"
+          fill="none"
+          stroke="#9d9a9e"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <circle
+          cx="46"
+          cy="56"
+          r="2"
+          fill="#4A90E2"
+          stroke="#9d9a9e"
+          stroke-width="1.5"
+        />
+      </g>
+
+      <!-- Detalles -->
+      <line
+        x1="6"
+        y1="40"
+        x2="14"
+        y2="40"
+        stroke="#fff"
+        stroke-width="1.5"
+        opacity="0.3"
+      />
+      <line
+        x1="50"
+        y1="40"
+        x2="58"
+        y2="40"
+        stroke="#fff"
+        stroke-width="1.5"
+        opacity="0.3"
+      />
+
+      <!-- Sombra -->
+      <ellipse cx="32" cy="62" rx="12" ry="2.5" fill="#ccc" opacity="0.3" />
+    </svg>
+  </div>
+
+  <div v-else-if="type == 'handshakeSpan'">
+    <svg
+      height="70"
+      width="70"
+      version="1.1"
+      id="_x32_"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 512 512"
+      xml:space="preserve"
+      fill="#ffdd67"
+      class="animated-hand"
+    >
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g
+        id="SVGRepo_tracerCarrier"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></g>
+      <g id="SVGRepo_iconCarrier">
+        
+        <g>
+          <path
+            class="st0"
+            d="M255.366,141.046c-7.4,3.583-14.732,8.548-21.533,15.357c-34.091,34.098-65.081,65.088-65.081,65.088 l0.013,0.02c-0.185,0.186-0.371,0.338-0.557,0.53c-8.824,8.831-9.174,22.909-1.025,32.146c0.323,0.371,0.668,0.736,1.025,1.086 c9.161,9.174,24.036,9.196,33.232,0l35.797-35.797c6.176,2.263,12.248,3.583,18.074,4.243c7.937,0.88,15.392,0.55,22.022-0.385 c16.162-2.29,14.47-1.623,23.844-4.704c9.353-3.068,19.862-9.354,19.862-9.354l6.362,6.355 c0.701,0.681,16.919,16.925,25.192,25.185c1.465,1.471,2.709,2.682,3.542,3.549c0.956,0.997,2.022,1.719,2.682,2.682l41.278,41.279 c11.898-13.35,25.488-33.232,23.81-56.058L320.763,129.14C320.763,129.14,285.062,126.589,255.366,141.046z"
+          ></path>
+          <path
+            class="st0"
+            d="M261.115,394.362c-9.134-9.147-23.961-9.147-33.101,0l-6.794,6.794c9.119-9.132,9.112-23.926-0.021-33.066 c-9.14-9.126-23.947-9.126-33.087,0.007c9.14-9.133,9.14-23.94,0-33.087c-9.133-9.148-23.947-9.133-33.087,0 c9.14-9.133,9.14-23.947,0-33.095c-9.134-9.132-23.947-9.132-33.088,0.014l-20.46,20.453c-9.14,9.147-9.14,23.947,0,33.094 c9.133,9.134,23.941,9.134,33.08,0c-9.14,9.134-9.14,23.947,0,33.087c9.147,9.133,23.954,9.133,33.094,0 c-9.14,9.133-9.14,23.941,0,33.088c9.14,9.133,23.947,9.133,33.088,0l6.802-6.809c-9.119,9.147-9.113,23.94,0.02,33.081 c9.14,9.132,23.947,9.132,33.088,0l20.467-20.468C270.248,418.302,270.248,403.495,261.115,394.362z"
+          ></path>
+          <path
+            class="st0"
+            d="M507.987,178.28L387.543,57.822c-5.351-5.337-14.002-5.337-19.339,0l-38.631,38.63 c-5.337,5.337-5.337,13.989,0,19.333l120.458,120.451c5.33,5.35,13.996,5.35,19.326,0l38.63-38.638 C513.338,192.276,513.338,183.624,507.987,178.28z M473.655,204.992c-5.75,5.736-15.048,5.736-20.777,0 c-5.735-5.743-5.735-15.041,0-20.777c5.729-5.736,15.027-5.736,20.777,0C479.391,189.951,479.384,199.249,473.655,204.992z"
+          ></path>
+          <path
+            class="st0"
+            d="M182.417,99.864l-38.624-38.63c-5.336-5.337-13.995-5.337-19.332,0L4.003,181.691 c-5.337,5.323-5.337,13.989,0,19.319l38.631,38.644c5.33,5.331,14.002,5.331,19.325,0l120.458-120.458 C187.761,113.859,187.761,105.207,182.417,99.864z M59.118,208.403c-5.736,5.729-15.04,5.729-20.777,0 c-5.735-5.742-5.735-15.041,0-20.777c5.736-5.735,15.041-5.735,20.777,0C64.854,193.362,64.854,202.66,59.118,208.403z"
+          ></path>
+          <path
+            class="st0"
+            d="M397.528,312.809l-7.468-7.482l-72.509-72.509l-4.883,2.166l-5.316,1.919l-0.384,0.117 c-0.936,0.296-9.684,2.971-26.932,5.412c-9.12,1.273-18.156,1.431-26.904,0.434c-3.459-0.385-6.898-0.95-10.296-1.692 l-27.757,27.744c-16.678,16.678-43.836,16.678-60.514,0c-0.585-0.591-1.149-1.19-1.671-1.781l-0.179-0.2 c-10.529-11.939-13.204-28.28-8.252-42.461l10.673-16.609l-0.02-0.02l65.081-65.074c2.647-2.641,5.426-5.103,8.314-7.428 c-20.281-3.982-37.296-2.806-37.296-2.806L88.093,235.679c-1.389,18.988,11.651,39.799,20.928,51.952 c16.692-15.963,43.239-15.756,59.641,0.654c6.107,6.1,9.952,13.617,11.574,21.498c7.895,1.637,15.406,5.475,21.513,11.582 c6.107,6.114,9.952,13.631,11.575,21.519c7.888,1.623,15.412,5.46,21.513,11.568c4.078,4.078,7.152,8.783,9.222,13.817 c11.1-0.137,22.242,4.016,30.688,12.455c16.65,16.636,16.643,43.733,0,60.363l-6.809,6.822l3.411,3.412 c9.148,9.147,23.954,9.147,33.095,0c9.14-9.134,9.14-23.947,0-33.088l6.808,6.83c9.147,9.133,23.947,9.133,33.087,0 c9.14-9.147,9.147-23.954,0-33.101c9.147,9.147,23.947,9.147,33.087,0c9.134-9.126,9.154-23.94,0-33.088 c9.154,9.148,23.954,9.148,33.088,0c9.147-9.132,9.147-23.947,0-33.08L397.528,312.809z"
+          ></path>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div v-else-if="type == 'personHiSpan'" class="personhicontainer">
+    <svg width="70" height="70" viewBox="0 -0.5 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="si-glyph si-glyph-bubble-message-hi personhisvg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>1036</title> <defs> </defs> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M8.979,0.021 C4.581,0.021 1.011,2.813 1.011,6.256 C1.011,9.399 3.987,11.99 7.852,12.42 L5.805,15.971 L11.924,12.045 C14.864,11.128 16.947,8.884 16.947,6.256 C16.947,2.812 13.379,0.021 8.979,0.021 L8.979,0.021 Z M9.04,9.018 L7.972,9.018 L7.972,7.075 L6.032,7.075 L6.032,9.018 L4.96,9.041 L4.96,3.992 L6.032,3.969 L6.032,5.987 L7.972,5.987 L7.972,3.969 L9.04,3.969 L9.04,9.018 L9.04,9.018 Z M11,9.018 L9.954,9.018 L9.954,5.938 L11,5.938 L11,9.018 L11,9.018 Z M11.031,5.041 L9.954,5.041 L9.954,3.937 L11.031,3.937 L11.031,5.041 L11.031,5.041 Z M14.031,9.016 L12.968,9.016 L12.968,7.963 L14.031,7.963 L14.031,9.016 L14.031,9.016 Z M14.016,7.016 L12.969,7.016 L12.969,3.954 L14.016,3.954 L14.016,7.016 L14.016,7.016 Z" fill="#ffdd67" class="si-glyph-fill"> </path> </g> </g></svg>
+
+    <svg width="70" height="70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 21V18.5C4 15.4624 6.46243 13 9.5 13H12.8513C15.307 13 17.4651 11.3721 18.1397 9.01097L18.7454 6.89097C18.8961 6.3636 19.3781 6 19.9266 6C20.7258 6 21.3122 6.75106 21.1184 7.5264L19.3638 14.5448C19.15 15.4 18.3816 16 17.5 16M8 21V18M16 6.5C16 8.70914 14.2091 10.5 12 10.5C9.79086 10.5 8 8.70914 8 6.5C8 4.29086 9.79086 2.5 12 2.5C14.2091 2.5 16 4.29086 16 6.5Z" stroke="#42ade2" stroke-linecap="round" stroke-width="1.4"></path></g></svg>
+  </div>
+  <div v-else></div>
 </template>
 
 <script setup>
@@ -260,6 +408,7 @@ defineProps({
 </script>
 
 <style scoped>
+/* hello hand */
 .animated-hand {
   animation: shake-hand 1s ease-in-out infinite alternate;
   transform-origin: center center;
@@ -277,6 +426,71 @@ defineProps({
   }
   100% {
     transform: rotate(0deg);
+  }
+}
+
+/* heardPhne */
+.mic-path {
+  animation: vibrateMic 0.6s ease-in-out infinite;
+  transform-origin: right center;
+}
+
+@keyframes vibrateMic {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+/* handshake */
+.animated-hand {
+  animation: bounce-hand 1s ease-in-out infinite alternate;
+}
+
+@keyframes bounce-hand {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(20px);
+  }
+}
+
+
+/* personHi */
+
+.personhicontainer{
+  display: flex;
+  flex-direction: column;
+  gap: 1;  
+}
+
+
+
+.personhisvg{
+  width: 40%;
+  justify-content: end;
+  animation: hi-hi 1s ease-in-out infinite alternate;
+}
+
+@keyframes hi-hi {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(15px);
   }
 }
 </style>
