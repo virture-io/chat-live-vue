@@ -1,3 +1,4 @@
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Manager } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
@@ -7,26 +8,26 @@ import { useSessionMetrics } from "./useSessionMetrics";
 import { areObjectsDeepEqual } from "./compare-objects";
 import { useSound } from "./useSound";
 
-const { sessionInfo } = useSessionMetrics();
-let socket = null;
-let manager = null;
-
-export const socketConnection = (
+export const useSocketConnection = (
   socketUrl,
   idAgent,
   api_key = "",
   nameSpace,
-  soundName = 'sound1'
+  soundName = "sound1"
 ) => {
-  if (socket) return socket;
+  const socket = ref(null);
+  const manager = ref(null);
+  const navigationInterval = ref(null);
+  const widgetInterval = ref(null);
+  const metricsInterval = ref(null);
+  const lastPath = ref("");
 
-  const { setValueMessages, addMessage, setCustomStyle, custom_style } =
-    useChatMessages();
+  const { setValueMessages, addMessage, setCustomStyle, custom_style } = useChatMessages();
   const { playSound } = useSound();
-  let currentUrl = window.location.href;
-  get_utm(currentUrl);
+  const { sessionInfo } = useSessionMetrics();
 
   // Obtener o generar un UUID persistente para el usuario
+  const getUserUUID = () => {
   let userUUID = localStorage.getItem("userUUID");
   if (!userUUID) {
     userUUID = uuidv4();
@@ -39,11 +40,14 @@ export const socketConnection = (
       chat_source: "user_initiated",
     });
   }
+    return userUUID;
+  };
 
-  // Obtener el ID del chat si existe
-  let idThread = localStorage.getItem("userUUID") ?? "";
+  const initializeSocket = () => {
+    const userUUID = getUserUUID();
+    const idThread = userUUID;
 
-  manager = new Manager(socketUrl, {
+    manager.value = new Manager(socketUrl, {
     transports: ["websocket", "polling"],
     reconnection: true,
     reconnectionAttempts: 5,
@@ -56,10 +60,10 @@ export const socketConnection = (
     },
   });
 
-  socket = manager.socket(nameSpace);
+    socket.value = manager.value.socket(nameSpace);
 
-  socket.on("connect", () => {
-    socket.emit(
+    socket.value.on("connect", () => {
+      socket.value.emit(
       "connected-chat",
       { userUUID: idThread, agentId: idAgent },
       (val) => {
@@ -70,17 +74,30 @@ export const socketConnection = (
     );
   });
 
-  let lastPath = "";
+    socket.value.on("disconnect", () => {
+      // Manejar desconexión si es necesario
+    });
 
-  setInterval(() => {
+    socket.value.on("response", async (val) => {
+      addMessage(val);
+      playSound(
+        custom_style.value.soundName
+          ? custom_style.value.soundName
+          : soundName ?? "sound1"
+      );
+    });
+  };
+
+  const setupNavigationTracking = () => {
+    navigationInterval.value = setInterval(() => {
     const currentPath = window.location.href;
 
-    if (currentPath !== lastPath) {
+      if (currentPath !== lastPath.value) {
       const now = new Date();
       const userNavigation = {
         urlPath: currentPath,
         time: now.toISOString(),
-        clientId: idThread,
+          clientId: getUserUUID(),
         instance: idAgent,
         utms: {
           utm_source: localStorage.getItem("utm_source"),
@@ -100,41 +117,64 @@ export const socketConnection = (
         },
       };
 
-      socket.emit("navigation-path-chat", userNavigation);
-
-      lastPath = currentPath;
+        socket.value?.emit("navigation-path-chat", userNavigation);
+        lastPath.value = currentPath;
     }
   }, 2000);
+  };
 
-  //get config custo widget
-  let style;
-  setInterval(() => {
-    socket.emit("get-custom-widget", idAgent, (val) => {
-      style = val;
-      if (!haveSameValues(style, custom_style.value)) {
-        setCustomStyle({ ...style });
+  const setupWidgetConfig = () => {
+    widgetInterval.value = setInterval(() => {
+      socket.value?.emit("get-custom-widget", idAgent, (val) => {
+        if (!haveSameValues(val, custom_style.value)) {
+          setCustomStyle({ ...val });
       }
     });
   }, 1000);
+  };
 
-  let val;
-  setInterval(() => {
-    if (
-      !areObjectsDeepEqual(val, { idClient: idThread, ...sessionInfo.value })
-    ) {
-      socket.emit("metrics-chat", { idClient: idThread, ...sessionInfo.value });
-      val = { idClient: idThread, ...sessionInfo.value };
+  const setupMetricsTracking = () => {
+    let lastMetrics = null;
+    metricsInterval.value = setInterval(() => {
+      const currentMetrics = { idClient: getUserUUID(), ...sessionInfo.value };
+      if (!areObjectsDeepEqual(lastMetrics, currentMetrics)) {
+        socket.value?.emit("metrics-chat", currentMetrics);
+        lastMetrics = currentMetrics;
     }
   }, 10000);
+  };
 
-  socket.on("disconnect", () => {});
-
-  socket.on("response", (val) => {
-    addMessage(val);
-    playSound(soundName);
+  onMounted(() => {
+    const currentUrl = window.location.href;
+    get_utm(currentUrl);
+    initializeSocket();
+    setupNavigationTracking();
+    setupWidgetConfig();
+    setupMetricsTracking();
   });
 
-  return socket;
+  onUnmounted(() => {
+    // Limpiar intervalos
+    if (navigationInterval.value) clearInterval(navigationInterval.value);
+    if (widgetInterval.value) clearInterval(widgetInterval.value);
+    if (metricsInterval.value) clearInterval(metricsInterval.value);
+
+    // Desconectar socket
+    if (socket.value) {
+      socket.value.disconnect();
+      socket.value = null;
+    }
+
+    // Limpiar manager
+    if (manager.value) {
+      manager.value = null;
+    }
+  });
+
+  return {
+    socket,
+    manager
+  };
 };
 
 function haveSameValues(obj1, obj2) {
@@ -153,5 +193,3 @@ function haveSameValues(obj1, obj2) {
 
   return true;
 }
-
-export const useSocket = () => socket;

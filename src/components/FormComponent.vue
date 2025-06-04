@@ -64,7 +64,7 @@ import { ref, onMounted } from "vue";
 import SvgComponent from "./SvgComponent.vue";
 import ChatBubbleComponent from "./ChatBubbleComponent.vue";
 import { useChatMessages } from "../composable/useMessages";
-import { useSocket } from "../composable/socket-connection";
+import { useSocketConnection } from "../composable/socket-connection";
 import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
 
 const props = defineProps({
@@ -128,23 +128,38 @@ const props = defineProps({
     type: String,
     default: "#3f3f3f",
   },
+
+  socketUrl: {
+    type: String,
+    default: "",
+  },
+
+  nameSpace: {
+    type: String,
+    default: "",
+  },
 });
 
 const textareaRef = ref(null);
 const isVisible = ref(false);
 const { addMessage } = useChatMessages();
 const message = ref("");
-const socket = useSocket();
+const { socket } = useSocketConnection(
+  props.socketUrl,
+  props.idAgent,
+  props.api_key,
+  props.nameSpace
+);
 const id = localStorage.getItem("userUUID");
 
 const sendMessage = () => {
-  if (message.value.trim()) {
+  if (message.value.trim() && socket.value) {
     const form = {
       content: message.value.trim(),
       role: "user",
     };
     addMessage(form);
-    socket.emit(
+    socket.value.emit(
       "send-chat-message",
       {
         userUUID: id ?? "",

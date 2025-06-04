@@ -144,10 +144,6 @@ export const useSessionMetrics = () => {
         longitude: data.longitude || null,
         timezone: data.timezone || "Unknown",
       };
-      console.log(
-        "Ubicación obtenida por IP:",
-        sessionInfo.value.clientLocation.city
-      );
     } catch (error) {
       console.error("Error fetching IP-based location data:", error);
     }

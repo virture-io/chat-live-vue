@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
-import { socketConnection } from "./composable/socket-connection";
+import { useSocketConnection } from "./composable/socket-connection";
 import { useChatMessages } from "./composable/useMessages";
 import { pushToDataLayer, CHAT_EVENTS } from "./utils/dataLayer";
 
@@ -109,15 +109,23 @@ const props = defineProps({
   },
   soundName: {
     type: String,
-    default: 'sound1'
-  }
+    default: "sound1",
+  },
 });
 
 const chatButtonRef = ref(null);
 const showGreetingModal = ref(false);
 const showTypingIndicator = ref(false);
 const { openChat, setValueOpenChat, custom_style } = useChatMessages();
-//const isChatOpen = ref(openChat.value);
+
+// Inicializar la conexión del socket
+const { socket: chatSocket } = useSocketConnection(
+  props.socketUrl,
+  props.idAgent,
+  props.api_key,
+  props.nameSpace,
+  props.soundName
+);
 
 const toggleChat = () => {
   if (showGreetingModal.value) {
@@ -126,7 +134,6 @@ const toggleChat = () => {
   if (showTypingIndicator.value) {
     showTypingIndicator.value = false;
   }
-  //isChatOpen.value = !isChatOpen.value;
   setValueOpenChat(!openChat.value);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
 
@@ -212,16 +219,7 @@ watch(
   { deep: true }
 );
 
-onMounted(async () => {
-  // Establecer conexión del socket
-  await socketConnection(
-    props.socketUrl,
-    props.idAgent,
-    props.api_key,
-    props.nameSpace,
-    props.soundName
-  );
-
+onMounted(() => {
   setupTimers();
 
   unwatchChatOpen = watch(openChat, (newValue) => {
@@ -385,6 +383,8 @@ onMounted(async () => {
 
     <div v-if="openChat" class="form-container">
       <FormComponent
+        :socketUrl="props.socketUrl"
+        :nameSpace="props.nameSpace"
         :idAgent="props.idAgent"
         :api_key="props.api_key"
         :chatPanelBackground="
