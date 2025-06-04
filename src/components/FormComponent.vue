@@ -76,6 +76,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  socket: {
+    type: Object,
+    required: true,
+  },
   chatPanelBackground: {
     type: String,
     default: "#ffffff",
@@ -144,22 +148,16 @@ const textareaRef = ref(null);
 const isVisible = ref(false);
 const { addMessage } = useChatMessages();
 const message = ref("");
-const { socket } = useSocketConnection(
-  props.socketUrl,
-  props.idAgent,
-  props.api_key,
-  props.nameSpace
-);
 const id = localStorage.getItem("userUUID");
 
 const sendMessage = () => {
-  if (message.value.trim() && socket.value) {
+  if (message.value.trim() && props.socket) {
     const form = {
       content: message.value.trim(),
       role: "user",
     };
     addMessage(form);
-    socket.value.emit(
+    props.socket.emit(
       "send-chat-message",
       {
         userUUID: id ?? "",

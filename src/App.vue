@@ -387,6 +387,7 @@ onMounted(() => {
         :nameSpace="props.nameSpace"
         :idAgent="props.idAgent"
         :api_key="props.api_key"
+        :socket="chatSocket"
         :chatPanelBackground="
           custom_style.chatPanelBackground || chatPanelBackground
         "
