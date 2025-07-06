@@ -156,6 +156,10 @@ export const useSessionMetrics = () => {
       clientLocation: sessionInfo.value.clientLocation,
       referrer: referrerUrl ? referrerUrl : null,
     };
+  };
+
+  // Función para solicitar ubicación manualmente
+  const requestLocationPermission = async () => {
     await getLocationInfo();
   };
 
@@ -171,5 +175,6 @@ export const useSessionMetrics = () => {
   return {
     sessionInfo,
     updateSessionInfo,
+    requestLocationPermission,
   };
 };

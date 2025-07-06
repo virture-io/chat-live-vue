@@ -38,5 +38,8 @@ import "vue-chat-widget";
   botMessageBackground="#f5f5f5"
   botMessageTextColor="#3f3f3f"
   svgName="helloSpan || headPhoneSpan || handshakeSpan || personHiSpan || ''"
+  gaTrackingId="id"
+  soundName="sound1 | sound2 | sound3 | sound4 | sound5"
+  instanceName="my proyect"
 ></vue-chat-widget>
 ```

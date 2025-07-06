@@ -3,6 +3,9 @@ import { ref } from "vue";
 const messages = ref([]);
 const openChat = ref(false);
 const custom_style = ref({});
+const closeModalOption = ref(false);
+const stateBtnAlerts = ref(false);
+const stateBtnUbication = ref(false);
 
 export const useChatMessages = () => {
   const addMessage = (newMessage) => {
@@ -22,6 +25,25 @@ export const useChatMessages = () => {
     custom_style.value = val;
   };
 
+  const onCloseModalOption = () => {
+    closeModalOption.value = true;
+  };
+
+  const setStateBtnAlert = (val) => {
+    stateBtnAlerts.value = val;
+
+    if (stateBtnAlerts.value && stateBtnUbication.value) {
+      closeModalOption.value = true;
+    }
+  };
+
+  const setStateBtnUbication = (val) => {
+    stateBtnUbication.value = val;
+    if (stateBtnAlerts.value && stateBtnUbication.value) {
+      closeModalOption.value = true;
+    }
+  };
+
   return {
     messages,
     addMessage,
@@ -30,5 +52,11 @@ export const useChatMessages = () => {
     setValueOpenChat,
     custom_style,
     setCustomStyle,
+    closeModalOption,
+    onCloseModalOption,
+    stateBtnAlerts,
+    stateBtnUbication,
+    setStateBtnAlert,
+    setStateBtnUbication,
   };
 };

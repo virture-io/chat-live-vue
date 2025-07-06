@@ -99,6 +99,9 @@ const formattedContent = computed(() => {
 </script>
 
 <style scoped>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .message-content :deep(a) {
   color: #15be86;
   text-decoration: underline;

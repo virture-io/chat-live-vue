@@ -1,19 +1,20 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 import { Manager } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { useChatMessages } from "./useMessages";
 import { get_utm } from "./get_utm";
-import { pushToDataLayer, CHAT_EVENTS } from "../utils/dataLayer";
+import { sendFlexibleEvent, CHAT_EVENTS } from "../utils/dataLayer";
 import { useSessionMetrics } from "./useSessionMetrics";
 import { areObjectsDeepEqual } from "./compare-objects";
-import { useSound } from "./useSound";
+import { soundInstance } from './soundInstance';
 
 export const useSocketConnection = (
   socketUrl,
   idAgent,
   api_key = "",
   nameSpace,
-  soundName = "sound1"
+  soundName = "sound1",
+  gaTrackingId = ""
 ) => {
   const socket = ref(null);
   const manager = ref(null);
@@ -22,24 +23,18 @@ export const useSocketConnection = (
   const metricsInterval = ref(null);
   const lastPath = ref("");
 
-  const { setValueMessages, addMessage, setCustomStyle, custom_style } = useChatMessages();
-  const { playSound } = useSound();
+  const { setValueMessages, addMessage, setCustomStyle, custom_style } =
+    useChatMessages();
+  const { playSound } = soundInstance;
   const { sessionInfo } = useSessionMetrics();
 
   // Obtener o generar un UUID persistente para el usuario
   const getUserUUID = () => {
-  let userUUID = localStorage.getItem("userUUID");
-  if (!userUUID) {
-    userUUID = uuidv4();
-    localStorage.setItem("userUUID", userUUID);
-
-    // Track new session creation
-    pushToDataLayer({
-      event: CHAT_EVENTS.SESSION_STARTED,
-      chat_session_id: userUUID,
-      chat_source: "user_initiated",
-    });
-  }
+    let userUUID = localStorage.getItem("userUUID");
+    if (!userUUID) {
+      userUUID = uuidv4();
+      localStorage.setItem("userUUID", userUUID);
+    }
     return userUUID;
   };
 
@@ -48,35 +43,37 @@ export const useSocketConnection = (
     const idThread = userUUID;
 
     manager.value = new Manager(socketUrl, {
-    transports: ["websocket", "polling"],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
-    query: {
-      idOwner: userUUID,
-      api_key: api_key,
-      idClient: userUUID,
-      instance: idAgent,
-    },
-  });
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      query: {
+        idOwner: userUUID,
+        api_key: api_key,
+        idClient: userUUID,
+        instance: idAgent,
+      },
+    });
 
     socket.value = manager.value.socket(nameSpace);
 
     socket.value.on("connect", () => {
       socket.value.emit(
-      "connected-chat",
-      { userUUID: idThread, agentId: idAgent },
-      (val) => {
-        if (val.messages) {
-          setValueMessages(val.messages);
+        "connected-chat",
+        { userUUID: idThread, agentId: idAgent },
+        (val) => {
+          if (val.messages) {
+            setValueMessages(val.messages);
+          }
         }
-      }
-    );
-  });
+      );
 
-    socket.value.on("disconnect", () => {
-      // Manejar desconexión si es necesario
+      sendFlexibleEvent(CHAT_EVENTS.SESSION_STARTED, {
+        chat_session_id: userUUID,
+      });
     });
+
+    socket.value.on("disconnect", () => {});
 
     socket.value.on("response", async (val) => {
       addMessage(val);
@@ -86,41 +83,39 @@ export const useSocketConnection = (
           : soundName ?? "sound1"
       );
     });
+
+    socket.value.on("lead-registered", () => {
+      sendFlexibleEvent(CHAT_EVENTS.LEAD_REGISTERED, {
+        chat_session_id: userUUID,
+      });
+    });
+
+    socket.value.on("scheduled_appointment", () => {
+      sendFlexibleEvent(CHAT_EVENTS.SCHEDULED_APPOINTMENT, {
+        chat_session_id: userUUID,
+      });
+    });
   };
 
   const setupNavigationTracking = () => {
     navigationInterval.value = setInterval(() => {
-    const currentPath = window.location.href;
+      const currentPath = window.location.href;
+      const utms = JSON.parse(localStorage.getItem("utm_obj"));
 
       if (currentPath !== lastPath.value) {
-      const now = new Date();
-      const userNavigation = {
-        urlPath: currentPath,
-        time: now.toISOString(),
+        const now = new Date();
+        const userNavigation = {
+          urlPath: currentPath,
+          time: now.toISOString(),
           clientId: getUserUUID(),
-        instance: idAgent,
-        utms: {
-          utm_source: localStorage.getItem("utm_source"),
-          utm_medium: localStorage.getItem("utm_medium"),
-          campaign: localStorage.getItem("campaign"),
-          utm_term: localStorage.getItem("utm_term"),
-          utm_content: localStorage.getItem("utm_content"),
-          gclid: localStorage.getItem("gclid"),
-          wbraid: localStorage.getItem("wbraid"),
-          gbraid: localStorage.getItem("gbraid"),
-          crm_link: localStorage.getItem("crm_link"),
-          adSet: localStorage.getItem("adSet"),
-          ad: localStorage.getItem("ad"),
-          form: localStorage.getItem("form"),
-          gad_campaignid: localStorage.getItem("gad_campaignid"),
-          gad_source: localStorage.getItem("gad_source"),
-        },
-      };
+          instance: idAgent,
+          utms,
+        };
 
         socket.value?.emit("navigation-path-chat", userNavigation);
         lastPath.value = currentPath;
-    }
-  }, 2000);
+      }
+    }, 2000);
   };
 
   const setupWidgetConfig = () => {
@@ -128,9 +123,9 @@ export const useSocketConnection = (
       socket.value?.emit("get-custom-widget", idAgent, (val) => {
         if (!haveSameValues(val, custom_style.value)) {
           setCustomStyle({ ...val });
-      }
-    });
-  }, 1000);
+        }
+      });
+    }, 1000);
   };
 
   const setupMetricsTracking = () => {
@@ -140,8 +135,8 @@ export const useSocketConnection = (
       if (!areObjectsDeepEqual(lastMetrics, currentMetrics)) {
         socket.value?.emit("metrics-chat", currentMetrics);
         lastMetrics = currentMetrics;
-    }
-  }, 10000);
+      }
+    }, 10000);
   };
 
   onMounted(() => {
@@ -173,7 +168,7 @@ export const useSocketConnection = (
 
   return {
     socket,
-    manager
+    manager,
   };
 };
 

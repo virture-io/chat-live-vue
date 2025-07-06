@@ -1,7 +1,7 @@
 {
   "name": "vue-chat-widget-drap",
   "private": false,
-  "version": "1.8.5",
+  "version": "2.4.7",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -25,6 +25,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bad-words": "^4.0.0",
     "dompurify": "^3.2.5",
     "socket.io-client": "^4.8.1",
     "uuid": "^11.1.0",
@@ -32,6 +33,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "vite": "^6.2.0"
   }
 }

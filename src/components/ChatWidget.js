@@ -1,7 +1,7 @@
 import { defineCustomElement } from "vue";
 import Chat from "../App.vue";
+import "../assets/style.css";
 
-// Convertir el componente Vue en un Custom Element
 const ChatElement = defineCustomElement(Chat, {
   props: {
     socketUrl: String,
@@ -10,6 +10,7 @@ const ChatElement = defineCustomElement(Chat, {
     nameSpace: String,
     welcomeMessage: String,
     iconButton: String,
+    gaTrackingId: String,
     // Welcome message colors
     welcomeBackgroundColor: String,
     welcomeTextColor: String,
@@ -34,11 +35,11 @@ const ChatElement = defineCustomElement(Chat, {
 
     //svg
     svgName: String,
-    soundName: String
+    soundName: String,
+    instanceName: String,
   },
 });
 
-// Registrar el elemento personalizado
 customElements.define("vue-chat-widget", ChatElement);
 
 export default ChatElement;

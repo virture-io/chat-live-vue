@@ -4,7 +4,12 @@ import FormComponent from "./components/FormComponent.vue";
 import SvgComponent from "./components/SvgComponent.vue";
 import { useSocketConnection } from "./composable/socket-connection";
 import { useChatMessages } from "./composable/useMessages";
-import { pushToDataLayer, CHAT_EVENTS } from "./utils/dataLayer";
+import "./assets/style.css";
+import {
+  initializeGoogleAnalytics,
+  sendFlexibleEvent,
+  CHAT_EVENTS,
+} from "./utils/dataLayer";
 
 const props = defineProps({
   socketUrl: {
@@ -22,6 +27,9 @@ const props = defineProps({
   nameSpace: {
     type: String,
     required: true,
+  },
+  gaTrackingId: {
+    type: String,
   },
   welcomeMessage: {
     type: String,
@@ -111,6 +119,9 @@ const props = defineProps({
     type: String,
     default: "sound1",
   },
+  instanceName: {
+    type: String,
+  },
 });
 
 const chatButtonRef = ref(null);
@@ -124,7 +135,8 @@ const { socket: chatSocket } = useSocketConnection(
   props.idAgent,
   props.api_key,
   props.nameSpace,
-  props.soundName
+  props.soundName,
+  props.gaTrackingId
 );
 
 const toggleChat = () => {
@@ -136,24 +148,15 @@ const toggleChat = () => {
   }
   setValueOpenChat(!openChat.value);
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
-
-  // Track widget open/close event
-  if (!openChat.value) {
-    pushToDataLayer({
-      event: CHAT_EVENTS.WIDGET_OPENED,
-      chat_is_expanded: true,
-    });
-  } else {
-    pushToDataLayer({
-      event: CHAT_EVENTS.WIDGET_CLOSED,
-      chat_is_expanded: false,
-    });
-  }
 };
 
 const dismissGreeting = () => {
   showGreetingModal.value = false;
   chatButtonRef.value?.classList.remove("chat-button-greet-animation");
+};
+
+const client_Clic_Start = () => {
+  clicStartChat();
 };
 
 const clicStartChat = () => {
@@ -219,8 +222,37 @@ watch(
   { deep: true }
 );
 
+watch(openChat, (newValue, oldValue) => {
+  if (newValue) {
+    clicStartChat();
+  }
+
+  newValue
+    ? sendFlexibleEvent(CHAT_EVENTS.WIDGET_OPENED, {
+        chat_form_open: true,
+      })
+    : sendFlexibleEvent(CHAT_EVENTS.WIDGET_CLOSED, {
+        chat_form_close: true,
+      });
+});
+
+// Watch para inicializar GA4 si el trackingId cambia y es válido
+watch(
+  () => props.gaTrackingId,
+  (newVal, oldVal) => {
+    if (newVal && oldVal !== newVal) {
+      initializeGoogleAnalytics(newVal);
+    }
+  }
+);
+
 onMounted(() => {
   setupTimers();
+
+  // Inicializar Google Analytics solo aquí
+  if (props.gaTrackingId) {
+    initializeGoogleAnalytics(props.gaTrackingId);
+  }
 
   unwatchChatOpen = watch(openChat, (newValue) => {
     if (newValue) {
@@ -231,7 +263,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="chat-container">
+  <div class="chat-container" :class="{ 'chat-open': openChat }">
     <transition name="typing-fade">
       <div
         v-if="showTypingIndicator"
@@ -294,7 +326,7 @@ onMounted(() => {
             ✕
           </button>
         </div>
-        <div @click="clicStartChat" style="cursor: pointer">
+        <div @click="client_Clic_Start" style="cursor: pointer">
           <SvgComponent
             :type="
               custom_style.svgName ? custom_style.svgName : props.svgName ?? ''
@@ -309,7 +341,7 @@ onMounted(() => {
             }}
           </p>
           <button
-            @click="clicStartChat"
+            @click="client_Clic_Start"
             class="greeting-ok-button"
             :style="{
               backgroundColor: custom_style.welcomeButtonColor
@@ -334,6 +366,7 @@ onMounted(() => {
 
     <button
       ref="chatButtonRef"
+      v-if="!openChat"
       class="chat-button"
       @click="toggleChat"
       :class="{ active: openChat }"
@@ -343,9 +376,7 @@ onMounted(() => {
               backgroundColor: custom_style.chatHeaderBackground
                 ? custom_style.chatHeaderBackground
                 : chatHeaderBackground,
-              color: custom_style.chatHeaderTextColor
-                ? custom_style.chatHeaderTextColor
-                : chatHeaderTextColor,
+              color: '#fff',
             }
           : {}
       "
@@ -383,6 +414,7 @@ onMounted(() => {
 
     <div v-if="openChat" class="form-container">
       <FormComponent
+        :gaTrackingId="props.gaTrackingId"
         :socketUrl="props.socketUrl"
         :nameSpace="props.nameSpace"
         :idAgent="props.idAgent"
@@ -427,12 +459,18 @@ onMounted(() => {
         :botMessageTextColor="
           custom_style.botMessageTextColor || botMessageTextColor
         "
+        :instanceName="instanceName"
+        :icon_button_url="custom_style.icon_button_url"
+        @close="toggleChat"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :host {
   display: block;
 }
@@ -636,5 +674,57 @@ onMounted(() => {
   line-height: 1;
   position: relative;
   z-index: 1;
+}
+
+/* --- Estilos para dispositivos móviles --- */
+@media (max-width: 768px) {
+  .chat-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .chat-container:not(.chat-open) {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: auto;
+    top: auto;
+  }
+
+  .chat-container.chat-open .chat-button,
+  .chat-container.chat-open .typing-indicator,
+  .chat-container.chat-open .greeting-modal {
+    display: none;
+  }
+
+  .chat-container.chat-open .form-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100vh; /* Esto se aplica primero */
+    height: 100dvh;
+    width: 100vw; /* Fallback para navegadores que no entienden dvw */
+    width: 100dvw;
+  }
+
+  .chat-container.chat-open .form-container .chat-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100vh; /* Esto se aplica primero */
+    height: 100dvh;
+    width: 100vw; /* Fallback para navegadores que no entienden dvw */
+    width: 100dvw;
+    border-radius: 0;
+    margin: 0;
+  }
 }
 </style>

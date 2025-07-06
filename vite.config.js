@@ -7,16 +7,16 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          // Habilita el modo Web Component
           isCustomElement: (tag) => tag.includes("-"),
         },
       },
-      customElement: true, // Esto es importante para el manejo de estilos
+
+      customElement: true,
     }),
   ],
   build: {
     lib: {
-      entry: "src/components/ChatWidget.js",
+      entry: "src/widget-entry.js",
       name: "ChatWidget",
       fileName: (format) => `chat-widget.${format}.js`,
       formats: ["es", "umd"],
@@ -29,15 +29,18 @@ export default defineConfig({
           vue: "Vue",
         },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name.endsWith('.mp3')) {
-            return 'assets/sound/[name][extname]'
+          if (assetInfo.name.endsWith(".mp3")) {
+            return "assets/sound/[name][extname]";
           }
-          return assetInfo.name
-        }
+          if (assetInfo.name.endsWith(".css")) {
+            return "assets/[name][extname]";
+          }
+          return assetInfo.name;
+        },
       },
     },
   },
-  assetsInclude: ['**/*.mp3']
+  assetsInclude: ["**/*.mp3"],
 });
 
 //Dev

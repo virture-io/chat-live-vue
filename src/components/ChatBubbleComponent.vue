@@ -62,10 +62,13 @@ watch(messages, scrollToBottom, { deep: true });
 </script>
 
 <style scoped>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .message {
   margin: 2px 0;
   padding: 5px 10px;
-  border-radius: 3px;
+  border-radius: 12px;
   max-width: 70%;
   min-width: 40px;
   overflow-wrap: break-word;
