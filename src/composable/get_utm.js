@@ -28,5 +28,7 @@ export const get_utm = (url) => {
     }
   }
 
+  utmObject.campaign = searchParams.get(paramsToCapture[4]) ?? null
+
   localStorage.setItem("utm_obj", JSON.stringify(utmObject));
 };
